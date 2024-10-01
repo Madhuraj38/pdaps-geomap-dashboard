@@ -1,0 +1,80 @@
+[
+    {
+      "title": "Criminal Justice",
+      "description": "State opioid-related policies relevant to the criminal justice system.",
+      "buttons": [
+        { "text": "Drug Decriminalization Laws" },
+        { "text": "Drug Induced Homicide Laws" },
+        { "text": "Incarceration Effects on Medicaid Status" },
+        { "text": "Involuntary Commitment for Substance Use" },
+        { "text": "Medicaid Coverage of Medication Assisted Treatment" },
+        { "text": "Medication Assisted Treatment in State Correctional Facilities" }
+      ]
+    },
+    {
+      "title": "Harm Reduction",
+      "description": "State laws aimed at promoting the safety of people who use drugs and mitigating drug-related harm.",
+      "buttons": [
+        { "text": "Drug Paraphernalia Laws and Access to Drug Checking Equipment" },
+        { "text": "Good Samaritan Overdose Prevention Laws" },
+        { "text": "Naloxone Overdose Prevention Laws"},
+        { "text": "Syringe Services Programs Laws"}
+      ]
+    },
+    {
+      "title": "Medical Marijuana",
+      "description": "State laws and regulations governing the production, transport, sale, quality and consumption of marijuana for therapeutic purposes.",
+      "buttons": [
+        { "text": "Medical Marijuana Caregiver Rules" },
+        { "text": "Medical Marijuana Dispensaries" },
+        { "text": "Medical Marijuana Laws for Patients" },
+        { "text": "Medical Marijuana Product Safety" }
+      ]
+    },
+    {
+      "title": "Medications for Opioid Use Disorder",
+      "description": "State laws related to Medications for Opioid Use Disorder (MOUD) treatment.",
+      "buttons": [
+        { "text": "Buprenorphine Prescribing Requirements and Limitations" },
+        { "text": "COVID-19 Mitigation Laws at State Correctional Facilities Relating to Opioid Use Disorder Treatment" },
+        { "text": "COVID-19 State Medicaid Waivers for Substance Use Disorder Treatment"},
+        { "text": "Commercial Insurance and Medicaid Coverage of Medications for Opioid Use Disorder Treatment" },
+        { "text": "Increasing Access to Buprenorphine and Methadone During COVID-19" },
+        { "text": "Medicaid Expansion and Section 1115 Waivers" },
+        { "text": "Requirements for Licensure and Operations of Medications for Opioid Use Disorder Treatment" }
+      ]
+    },
+    {
+      "title": "Opioid Related Controls",
+      "description": "State laws and regulations on various legal mechanisms used to control access to opioids.",
+      "buttons": [
+        { "text": "Direct Dispensing of Controlled Substances Laws" },
+        { "text": "Informed Consent for Opioid Prescribing Laws" },
+        { "text": "Opioid Prescribing Guidelines for Acute and Emergency Care" },
+        { "text": "Pain Management Clinic Laws" },
+        { "text": "State Laws Limiting Prescriptions for Opioid Analgesics" }
+      ]
+    },
+    {
+      "title": "Prescription Drug Monitoring Program",
+      "description": "State laws and regulations governing the operation and use of programs tracking prescription and dispensing of controlled substances.",
+      "buttons": [
+        { "text": "PDMP Access and Registration" },
+        { "text": "PDMP Administration" },
+        { "text": "PDMP Implementation Dates" },
+        { "text": "PDMP Reporting and Authorized Use" },
+        { "text": "Prescription Drug Monitoring Program Laws: Reporting, Mandates & Access, 2014-2019" }
+      ]
+    },
+    {
+      "title": "Related Topics",
+      "description": "Datasets on related drug law topics that provide an overview of the state laws and regulations governing these domains.",
+      "buttons": [
+        { "text": "Drugged Driving Laws"},
+        { "text": "Medication-Assisted Treatment with Methadone (MAT) laws" },
+        { "text": "Recreational Marijuana Laws" },
+        { "text": "State Laws Directing Opiod Litigation Proceeds" }
+      ]
+    }
+  ]
+  
