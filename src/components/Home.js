@@ -1,17 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import '../App.css';
 import { Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Home() {
+export default function Home({ handleParsePdf }) {
   const [data, setData] = useState([]);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     fetch('/data/laws.json')
       .then((response) => response.json())
       .then((data) => setData(data))
       .catch((error) => console.error('Error fetching data:', error));
   }, []);
+
+  const handleButtonClick = async (buttonText) => {
+    const data = await handleParsePdf(buttonText); // Ensure the data is fetched
+    console.log("inside home", data)
+    if (data) {
+      navigate('/geomap', { state: { parsedData: data } });// Navigate only when parsedData is available
+    } else {
+      console.error("Parsed data is null!");
+  } 
+};
 
   return (
     <div className='Home'>
@@ -26,7 +37,11 @@ export default function Home() {
                   <h2>{row.title}</h2>
                   <p>{row.description}</p>
                   {row.buttons.map((button, index) => (
-                    <Link key={index} to='/geomap'>
+                    <Link key={index} 
+                          // to="/geomap"
+                          onClick={()=> handleButtonClick(button.text)}
+                          // state={{ parsedData }}
+                    >
                       <Button
                         className='button'
                         variant="contained"
@@ -45,6 +60,7 @@ export default function Home() {
                             fontSize: '14px',
                           },
                         }}
+                        // onClick={()=> handleParsePdf(button.text)}
                       >
                         {button.text}
                       </Button>
@@ -59,7 +75,11 @@ export default function Home() {
                     <h2>{nextRow.title}</h2>
                     <p>{nextRow.description}</p>
                     {nextRow.buttons.map((button, index) => (
-                      <Link key={index} to='/geomap'>
+                      <Link key={index} 
+                          to="/geomap"
+                          onClick={()=> handleButtonClick(button.text)}
+                          // state={{ parsedData }}
+                      >
                         <Button
                           className='button'
                           variant="contained"
@@ -78,6 +98,7 @@ export default function Home() {
                               fontSize: '14px',
                             },
                           }}
+                          // onClick={()=> handleParsePdf(button.text)}
                         >
                           {button.text}
                         </Button>

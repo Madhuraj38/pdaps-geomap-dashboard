@@ -12,7 +12,8 @@ const renderCounty = () => {
     // var no_death = deaths[+d.id].val 
     const pathProps = {
       key: `path-${ index }`,
-      d: d.path,            
+      d: d.path, 
+      fill: "#5bc0de",           
       stroke: "#ffffff",
       strokeWidth: 0.5, 
       cursor: "pointer"

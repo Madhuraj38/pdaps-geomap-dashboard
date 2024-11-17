@@ -2,13 +2,15 @@ import React from 'react';
 import * as d3 from "d3";
 import '../App.css';
 import Map from "./Map"
+import { withRouter } from './withRouter';
 import MapLegend from './MapLegend';
+import LawsInfo from './LawsInfo';
 
-export default class GeoMap extends React.Component {
+class GeoMap extends React.Component {
 
   state={              
     mapBox: { width: 100, height: 100, top: 0, left: 0},
-    // countyBox: { width: 100, height: 100, top: 0, left: 0},
+    filterBox: { width: 100, height: 100, top: 0, left: 0},
     // patternInfoBox: { width: 100, height: 100, top: 0, left: 0},
     // patternBox: { width: 100, height: 100, top: 0, left: 0}, 
     showInfo: false,
@@ -16,7 +18,7 @@ export default class GeoMap extends React.Component {
     mapData: null,
     selectedCounty: null,
     selectedCountyDetails: null,
-    scaleFactor: 1 
+    scaleFactor: 1,
   }
 
   componentDidMount() {
@@ -25,20 +27,32 @@ export default class GeoMap extends React.Component {
     let winHeight = window.innerHeight - headerH;
     var pad = 8;
     var scaleInfo = 1;
-    if( window.innerHeight < 650) {
+    if( window.innerHeight > 650) {
       scaleInfo = 0.75;
     }
     
+    const parsedData = this.props.location?.state?.parsedData;
 
     this.setState({            
-                    mapBox:
+                    filterBox:
                       { 
-                        width: 0.55*(winWidth - pad*3), 
+                        width: 0.40*(winWidth - pad*3), 
                         height: 0.75*(winHeight-3*pad), 
-                        top: pad + headerH, 
+                        top: 3*pad + 2*headerH, 
                         left: pad
-                      }
+                      },
+                      mapBox:
+                        { 
+                          width: 0.55*(winWidth - pad*3), 
+                          height: 0.75*(winHeight-3*pad), 
+                          top: 3*pad + 2*headerH, 
+                          left: 0.45*(winWidth - pad*3)
+                        }
                   });
+
+    if (parsedData) {
+      console.log("Parsed Data in GeoMap.js:", parsedData); // Debugging log
+    }
 
     this.loadData();
 
@@ -55,50 +69,20 @@ export default class GeoMap extends React.Component {
       scaleInfo = 0.75
     }
 
-    this.setState({     
-                    headerBox:
-                    { 
-                      width: winWidth, 
-                      height: headerH, 
-                      top: 0, 
-                      left: 0
-                    },               
+    this.setState({              
                   mapBox:
                     { 
-                      width: 0.55*(winWidth - pad*3), 
-                      height: 0.75*(winHeight-3*pad), 
-                      top: pad + headerH, 
-                      left: pad
-                    },
-                  countyBox:
-                    { 
                       width: 0.45*(winWidth - pad*3), 
-                      height:  0.6*(0.75*(winHeight-3*pad) - pad), 
-                      top: pad + headerH, 
-                      left: 0.55*(winWidth - pad*3) + 2*pad
+                      height: 0.55*(winHeight-3*pad), 
+                      top: 3*pad + 2*headerH, 
+                      left : 0.45*(winWidth - pad*3)
                     },
-                  patternInfoBox:
+                  filterBox:
                     { 
-                      width: 0.45*(winWidth - pad*3), 
-                      height: 0.4*(0.75*(winHeight-3*pad) - pad), 
-                      top: 0.6*(0.75*(winHeight-3*pad) - pad) + 2*pad + headerH,
-                      left: 0.55*(winWidth - pad*3) + 2*pad
-                    },
-                  patternBox:
-                    { 
-                      width: winWidth - 2*pad, 
-                      height: 0.25*(winHeight - 3*pad), 
-                      top: 0.75*(winHeight-3*pad) + 2*pad + headerH, 
-                      left: pad
-                    },
-                  infoBox:
-                    { 
-                      width: winWidth < 460 ? winWidth : 460, 
-                      maxHeight: winHeight / 2, 
-                      top: winHeight < 350 ? pad : winHeight/2 - 175, 
-                      left: winWidth < 460 ? pad : winWidth/2 - 230,
-                      background: "white",
-                      paddingBottom: 30
+                      width: 0.30*(winWidth - pad*3), 
+                        height: 0.55*(winHeight-3*pad), 
+                        top: 3*pad + 2*headerH, 
+                        left: pad
                     },
                     scaleFactor: scaleInfo,
                   });
@@ -106,6 +90,12 @@ export default class GeoMap extends React.Component {
   
   loadData() {
     console.log("inside load");
+
+    // const { parsedData } = this.props;
+    // if (parsedData) {
+    //   console.log("Received parsed data:", parsedData);
+    // }
+
     let setState = this.setState.bind(this);
     d3.json("data/us.json").then(function(mapData) {  
       console.log("inside d3");   
@@ -120,6 +110,8 @@ export default class GeoMap extends React.Component {
   }
 
   render(){ 
+    const parsedData = this.props.location?.state?.parsedData;
+    console.log("Parsed Data in GeoMap render:", parsedData); 
     return (
       <div>
         <div className="contentdiv" style={this.state.mapBox}>
@@ -137,11 +129,13 @@ export default class GeoMap extends React.Component {
               : <input className="clear" type="button" value="Reset Selections" onClick={this.resetSelections.bind(this)} />
             } */}
           </div>
+          <div className="contentdiv" style={this.state.filterBox}>
+            <label class="contendDivHead" >Filter Laws</label>          
+            <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData}></LawsInfo>
+        </div>
       </div>
-      // <div>
-      //     <h1>GeoMap is still in develpment</h1>
-      // </div>
     );
   }
 }
 
+export default  withRouter(GeoMap)
