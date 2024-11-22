@@ -31,8 +31,6 @@ class GeoMap extends React.Component {
       scaleInfo = 0.75;
     }
     
-    const parsedData = this.props.location?.state?.parsedData;
-
     this.setState({            
                     filterBox:
                       { 
@@ -49,10 +47,6 @@ class GeoMap extends React.Component {
                           left: 0.45*(winWidth - pad*3)
                         }
                   });
-
-    if (parsedData) {
-      console.log("Parsed Data in GeoMap.js:", parsedData); // Debugging log
-    }
 
     this.loadData();
 
@@ -113,25 +107,25 @@ class GeoMap extends React.Component {
     const parsedData = this.props.location?.state?.parsedData;
     console.log("Parsed Data in GeoMap render:", parsedData); 
     return (
-      <div>
-        <div className="contentdiv" style={this.state.mapBox}>
-            <label class="contendDivHead">Map</label>          
-            {/* <MapLegend width={200} height={35}></MapLegend> */}
-            {
-              
-              this.state.mapData == null
-              ? null
-              : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} ></Map>
-            }
-            {/* {
-              this.state.selectedCounty == null & this.state.selectedPattern == null
-              ? null
-              : <input className="clear" type="button" value="Reset Selections" onClick={this.resetSelections.bind(this)} />
-            } */}
-          </div>
-          <div className="contentdiv" style={this.state.filterBox}>
-            <label class="contendDivHead" >Filter Laws</label>          
-            <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData}></LawsInfo>
+      <div className='contentdiv'>
+        <div className="content-right" /*style={this.state.mapBox}*/>
+          <label class="contendDivHead">Map</label>          
+          {/* <MapLegend width={200} height={35}></MapLegend> */}
+          {
+            
+            this.state.mapData == null
+            ? null
+            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} ></Map>
+          }
+          {/* {
+            this.state.selectedCounty == null & this.state.selectedPattern == null
+            ? null
+            : <input className="clear" type="button" value="Reset Selections" onClick={this.resetSelections.bind(this)} />
+          } */}
+        </div>
+        <div className="content-left" /*style={this.state.filterBox}*/>
+          <label class="contendDivHead" >Filter Laws</label>          
+          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData}></LawsInfo>
         </div>
       </div>
     );

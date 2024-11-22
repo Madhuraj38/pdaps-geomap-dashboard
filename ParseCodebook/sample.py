@@ -129,6 +129,36 @@ def parse_text_to_json(text):
 
     return json_output
 
+
+def consolidate_questions(json_result):
+    unique_questions = {}
+    
+    for question_data in json_result['questions']:
+        question = question_data['question']
+        question_type = question_data['question_type']
+        variables = question_data['variables']
+        
+        if question_type != "Binary - mutually exclusive":
+            if question not in unique_questions:
+                unique_questions[question] = {
+                    "question": question,
+                    "question_type": question_type,
+                    "variables": []
+                }
+            for variable in variables:
+                parts = variable['name'].split('_')
+                variable['name'] = parts[-1] if len(parts) > 1 else variable['name']
+                unique_questions[question]["variables"].append(variable)
+        else:
+            unique_questions[question] = {
+                "question": question,
+                "question_type": question_type,
+                "variables": variables
+            }
+    
+    json_result['questions'] = list(unique_questions.values())
+    return json_result
+
 def read_pdf_to_json(pdf_path):
     # pdf_path = './codebooks/2.pdf' 
 
@@ -137,7 +167,7 @@ def read_pdf_to_json(pdf_path):
     # questions_text = extract_questions_section(extracted_text)
     # print(questions_text)
     json_result = parse_text_to_json(extracted_text)
-
-    print(json.dumps(json_result, indent=4))
-    return json_result
+    result = consolidate_questions(json_result)
+    # print(json.dumps(result, indent=4))
+    return result
 

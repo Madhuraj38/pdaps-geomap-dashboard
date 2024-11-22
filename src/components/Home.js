@@ -3,7 +3,7 @@ import '../App.css';
 import { Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 
-export default function Home({ handleParsePdf }) {
+export default function Home({ handleParsePdf, handleParseDataset}) {
   const [data, setData] = useState([]);
   const navigate = useNavigate();
   
@@ -17,6 +17,9 @@ export default function Home({ handleParsePdf }) {
   const handleButtonClick = async (buttonText) => {
     const data = await handleParsePdf(buttonText); // Ensure the data is fetched
     console.log("inside home", data)
+
+    const dataset = await handleParseDataset(buttonText);
+    console.log("inside home dataset", dataset)
     if (data) {
       navigate('/geomap', { state: { parsedData: data } });// Navigate only when parsedData is available
     } else {

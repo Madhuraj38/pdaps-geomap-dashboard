@@ -70,11 +70,33 @@
   text-transform: none;
 }
 .contentdiv {
-  position: absolute;
+  margin: auto;
+  padding: 1rem;
+}
+.content-left{
+  width: 48%;
+  float: left;
+  /* position: absolute; */
+  /* box-shadow: 0px 0px 1px 1px #9a9a9a; */
+  overflow-y: auto;
+}
+.content-right{
+  float: right;
+  width: 48%;
+  /* position: absolute; */
   box-shadow: 0px 0px 1px 1px #9a9a9a;
   overflow-y: auto;
+}
+.contendDivHead{
+  font-size: 24px;
 }
 
 .questions {
   text-align: left;
+}
+
+.accordion_item{
+  margin-bottom: 10px;
+  box-shadow: 0px 0px 4px 0px #00000066;
+  border-radius: 10px;
 }
