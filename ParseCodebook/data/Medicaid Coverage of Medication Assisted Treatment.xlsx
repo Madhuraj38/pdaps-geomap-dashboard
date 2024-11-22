@@ -1,0 +1,52 @@
+﻿Jurisdictions,Effective Date,Valid Through Date,MAT_drugsBuprenorphine,MAT_drugsMethadone,MAT_drugs_Naltrexone,MAT_coverage,preferred_Bunavail (buprenorphine and naloxone) buccal film,preferred_Cassipa (buprenorphine and naloxone) sublingual film,preferred_Probuphine (buprenorphine) implant for subdermal administration,preferredSublocade (buprenorphine extended‐release) injection for subcutaneous use,"preferredSuboxone (buprenorphine and naloxone) sublingual film for sublingual or buccal use, or sublingual tablet",preferred_Subutex (buprenorphine) sublingual tablet,preferredZubsolv (buprenorphine and naloxone) sublingual tablets,preferred_Dolophine (methadone hydrochloride) tablets,preferred_Methadose (methadone hydrochloride) oral concentrate,preferred_Vivitrol (naltrexone for extended-release injectable suspension) intramuscular,preferred_None listed,preauthBunavail (buprenorphine and naloxone) buccal film,preauth_Cassipa (buprenorphine and naloxone) sublingual film,preauthProbuphine (buprenorphine) implant for subdermal administration,preauth_Sublocade (buprenorphine extended‐release) injection for subcutaneous use,"preauth_Suboxone (buprenorphine and naloxone) sublingual film for sublingual or buccal use, or sublingual tablet",preauth_Subutex (buprenorphine) sublingual tablet,preauth_Zubsolv (buprenorphine and naloxone) sublingual tablets,preauthDolophine (methadone hydrochloride) tablets,preauthMethadose (methadone hydrochloride) oral concentrate,preauth_Vivitrol (naltrexone for extended-release injectable suspension) intramuscular,preauth_None listed
+Alabama,7/1/19,8/1/19,1,1,0,1,0,0,0,1,1,0,1,0,0,0,0,1,0,1,0,0,0,0,1,1,0,0
+Alaska,8/8/14,8/1/19,1,0,1,1,0,0,0,0,1,0,1,0,0,1,0,0,0,0,0,1,1,1,0,0,0,0
+Arizona,8/1/19,8/1/19,1,1,1,1,0,0,1,1,1,1,0,0,0,1,0,0,0,1,0,0,1,0,1,1,0,0
+Arkansas,7/31/19,8/1/19,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,1,0,1,0,0,0,0
+California,7/1/19,8/1/19,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,0,0,1,1,1,0,0,0,0
+Colorado,7/1/19,8/1/19,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,1,1,1,1,1,0
+Connecticut,7/1/19,8/1/19,1,0,1,1,0,0,0,0,1,1,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0
+Delaware,8/1/19,8/1/19,1,0,1,1,0,0,0,1,1,0,1,0,0,0,0,1,1,0,0,1,0,1,0,0,0,0
+District of Columbia,7/3/19,8/1/19,1,0,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Florida,7/30/19,8/1/19,1,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,0,0,1,0
+Georgia,8/1/19,8/1/19,1,0,0,1,0,0,1,0,1,1,0,0,0,1,0,1,0,0,0,1,0,1,0,0,0,0
+Hawaii,8/1/19,8/1/19,1,1,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0
+Idaho,7/1/19,8/1/19,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,1,1,1,1,1,1,1,0,0,1,0
+Illinois,7/1/19,8/1/19,1,1,1,1,1,0,1,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,1,1,0,0
+Indiana,8/1/19,8/1/19,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,1,1,0,1,0,0,1,0,0,0,0
+Iowa,6/1/19,8/1/19,1,1,0,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,0,1,1,1,0,0
+Kansas,8/1/19,8/1/19,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0
+Kentucky,8/1/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,1,0,1,1,0,0,1,0,0,0,0
+Louisiana,7/15/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,0,1,1,0,0,1,0
+Maine,7/19/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,1,0,1,1,0,1,1,0,0,0,0
+Maryland,7/1/19,8/1/19,1,0,1,1,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0
+Massachusetts,7/15/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,1,0,1,0,0,1,0
+Michigan,7/1/19,8/1/19,1,0,0,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1
+Minnesota,7/1/19,8/1/19,1,0,0,1,0,0,0,0,1,0,1,0,0,0,0,1,0,1,1,0,1,1,0,0,0,0
+Mississippi,7/30/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,0,1,1,0,0,1,0,0,1,0
+Missouri,8/1/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,1,1,1,1,1,0,1,0,0,0,0
+Montana,6/12/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,0,0,0,1,1,1,0,0,0,0
+Nebraska,8/1/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,0,0,1,1,0,0,1,1,1,0,0,0,0
+Nevada,8/1/19,8/1/19,1,0,1,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,1,1,0,1,0,0,1,0
+New Hampshire,8/1/19,8/1/19,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0
+New Jersey,8/1/19,8/1/19,1,0,1,1,0,0,0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+New Mexico,7/1/19,8/1/19,1,0,1,1,1,1,0,0,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0
+New York,7/25/19,8/1/19,1,0,1,1,0,0,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0
+North Carolina,7/1/19,8/1/19,1,0,1,1,0,0,0,1,1,0,0,0,0,1,0,1,0,0,0,1,1,1,0,0,0,0
+North Dakota,5/1/19,8/1/19,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,0
+Ohio,7/1/19,8/1/19,1,0,1,1,1,0,0,1,1,1,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Oklahoma,8/1/19,8/1/19,1,0,0,1,0,0,0,0,1,0,0,0,0,0,0,1,1,1,1,1,0,1,0,0,0,0
+Oregon,7/1/19,8/1/19,1,0,1,1,1,1,0,0,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+Pennsylvania,1/28/19,8/1/19,1,0,1,1,0,0,0,0,1,1,0,0,0,0,0,1,0,1,1,0,0,1,0,0,1,0
+Rhode Island,8/1/19,8/1/19,1,0,1,1,0,0,0,0,1,1,0,0,0,0,0,1,1,1,1,1,0,1,0,0,1,0
+South Carolina,7/1/19,8/1/19,1,0,0,1,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1
+South Dakota,5/1/17,8/1/19,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,1,1,0,0,0,0
+Tennessee,8/1/19,8/1/19,1,0,0,1,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1,1,1,0,0,0,0
+Texas,7/25/19,8/1/19,1,0,1,1,1,0,1,0,1,1,1,0,0,1,0,1,1,0,0,1,0,1,0,0,0,0
+Utah,8/1/19,8/1/19,1,0,0,1,0,0,0,1,0,0,0,0,0,1,0,1,1,1,0,1,1,1,0,0,0,0
+Vermont,7/12/19,8/1/19,1,0,1,1,0,0,0,0,1,0,0,0,0,1,0,1,0,1,1,1,1,1,0,0,0,0
+Virginia,7/1/19,8/1/19,1,0,1,1,0,0,0,0,0,0,0,0,0,1,0,1,1,1,1,1,1,1,0,0,0,0
+Washington,7/1/19,8/1/19,1,0,1,1,0,1,0,0,1,0,0,0,0,1,0,1,0,1,1,0,1,1,0,0,0,0
+West Virginia,7/1/19,8/1/19,1,0,1,1,1,0,0,0,1,0,1,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0
+Wisconsin,1/1/18,8/1/19,1,1,1,1,0,0,0,0,1,0,1,1,1,1,0,1,0,0,1,1,1,0,0,0,0,0
+Wyoming,7/10/19,8/1/19,1,0,1,1,1,1,0,0,1,1,0,0,0,1,0,1,0,0,0,0,0,1,0,0,0,0
