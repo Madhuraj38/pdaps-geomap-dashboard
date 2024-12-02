@@ -18,6 +18,7 @@ class GeoMap extends React.Component {
     mapData: null,
     selectedCounty: null,
     selectedCountyDetails: null,
+    selectedVariable: null,
     scaleFactor: 1,
   }
 
@@ -103,9 +104,15 @@ class GeoMap extends React.Component {
     });
   }
 
+  handleVariableSelect = (variableName) => {
+    // Update the selected variable name in state
+    this.setState({ selectedVariable: variableName });
+  };
+
   render(){ 
     const parsedData = this.props.location?.state?.parsedData;
-    console.log("Parsed Data in GeoMap render:", parsedData); 
+    // console.log("Parsed Data in GeoMap render:", parsedData); 
+    const csvData = this.props.location?.state?.csvData;
     return (
       <div className='contentdiv'>
         <div className="content-right" /*style={this.state.mapBox}*/>
@@ -115,17 +122,22 @@ class GeoMap extends React.Component {
             
             this.state.mapData == null
             ? null
-            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} ></Map>
+            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedVariable={this.state.selectedVariable} ></Map>
           }
           {/* {
             this.state.selectedCounty == null & this.state.selectedPattern == null
             ? null
             : <input className="clear" type="button" value="Reset Selections" onClick={this.resetSelections.bind(this)} />
           } */}
+          {/* <div className='legend'>
+            <ul className="legend-label">
+              <li className="key" style={{borderLeftColor:'#5e8037', color:'black'}}>Meets Criteria</li>
+              <li className="key" style={{borderLeftColor:'#d3d3d3', color:'black'}}>Not match</li>
+            </ul>
+          </div> */}
         </div>
-        <div className="content-left" /*style={this.state.filterBox}*/>
-          <label class="contendDivHead" >Filter Laws</label>          
-          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData}></LawsInfo>
+        <div className="content-left" /*style={this.state.filterBox}*/>      
+          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect}></LawsInfo>
         </div>
       </div>
     );

@@ -2,6 +2,7 @@ import re
 import json
 import sys
 import PyPDF2
+import pandas as pd
 
 def extract_text_from_pdf(pdf_path):
     extracted_text = ""
@@ -147,7 +148,10 @@ def consolidate_questions(json_result):
                 }
             for variable in variables:
                 parts = variable['name'].split('_')
-                variable['name'] = parts[-1] if len(parts) > 1 else variable['name']
+                if len(parts) > 1:
+                    variable['var_name'] = variable['name']
+                    variable['name'] = parts[-1] 
+                    
                 unique_questions[question]["variables"].append(variable)
         else:
             unique_questions[question] = {
@@ -171,3 +175,70 @@ def read_pdf_to_json(pdf_path):
     # print(json.dumps(result, indent=4))
     return result
 
+def parse_excel_to_json(file_path):
+    try:
+        # List all available sheets
+        sheet_names = pd.ExcelFile(file_path).sheet_names
+        # print("Available sheets:", sheet_names)
+
+        target_sheet = None
+        for sheet in sheet_names:
+            if 'Statistical' in sheet:
+                target_sheet = sheet
+                break
+
+        # Default to the first sheet if no suitable sheet is found
+        if not target_sheet:
+            target_sheet = sheet_names[0]
+
+        # Load the selected sheet
+        # print(f"Loading sheet: {target_sheet}")
+        data = pd.read_excel(file_path, sheet_name=target_sheet)
+        # data = pd.read_excel(file_path, sheet_name='Statistical')
+        # print("Columns in the dataset:", data.columns.tolist())
+
+        # Strip whitespace from column names
+        data.columns = data.columns.str.strip()
+
+        # Replace NaN with None to make it JSON-compatible
+        # data = data.where(pd.notnull(data), None)
+        # # Prepare the JSON structure (as before)
+        # result = {"states": {}}
+
+        # # Group data by Jurisdictions
+        # for state, group in data.groupby('Jurisdictions'):
+        #     result["states"][state] = []
+        #     for _, row in group.iterrows():
+        #         entry = {
+        #             "effective_date": row["Effective Date"],
+        #             "valid_through_date": row["Valid Through Date"],
+        #             "variables": {var_name: row[var_name] for var_name in data.columns[3:]}
+        #         }
+        #         result["states"][state].append(entry)
+
+        # Prepare the JSON structure
+        result = {"variables": {}}
+
+        # Iterate over each variable (columns starting from the 4th column)
+        for var_name in data.columns[3:]:
+            result["variables"][var_name] = {"states": []}
+
+            # Iterate over each row and extract relevant data
+            for _, row in data.iterrows():
+                if pd.notna(row[var_name]):  # Skip NaN values
+                    result["variables"][var_name]["states"].append({
+                        "state": row["Jurisdictions"],
+                        "effective_date": row["Effective Date"],
+                        "valid_through_date": row["Valid Through Date"],
+                        "value": row[var_name]
+                    })
+
+        return result
+
+    except ValueError as e:
+        print(f"ValueError: {e}")
+        raise
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        raise

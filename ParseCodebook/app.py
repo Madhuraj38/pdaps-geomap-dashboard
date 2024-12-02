@@ -3,7 +3,7 @@ from flask_cors import CORS
 import os
 import pandas as pd
 
-from sample import read_pdf_to_json 
+from sample import parse_excel_to_json, read_pdf_to_json 
 
 app = Flask(__name__)
 CORS(app)
@@ -37,19 +37,9 @@ def parse_data():
 
     button_text = data['buttonText']
     file_path = os.path.join(DATA_FOLDER, f"{button_text}.xlsx")
-    data = pd.read_excel(file_path, sheet_name='Statistical Data')
+    
+    parsed_json = parse_excel_to_json(file_path)
+    return jsonify(parsed_json)
 
-    # Prepare the JSON structure
-    parsed_data = {}
-    for var_name in data.columns[3:]:  # Variables start after 'Effective Date' and 'Valid Through Date'
-        var_data = {}
-        for state_name, group in data.groupby('Jurisdictions'):
-            state_records = group[['Effective Date', 'Valid Through Date', var_name]].dropna().values.tolist()
-            var_data[state_name] = state_records
-        parsed_data[var_name] = var_data
-
-    print(parsed_data)
-    # Return the JSON response
-    return jsonify(parsed_data)
 if __name__ == "__main__":
     app.run(debug=True)

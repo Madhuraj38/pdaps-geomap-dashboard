@@ -6,7 +6,67 @@ import {schemeBlues} from "d3-scale-chromatic"
 
 const projection = null
 
-const renderCounty = () => {    
+const stateToFIPS = {
+  "Alabama": "01",
+  "Alaska": "02",
+  "Arizona": "04",
+  "Arkansas": "05",
+  "California": "06",
+  "Colorado": "08",
+  "Connecticut": "09",
+  "Delaware": "10",
+  "Florida": "12",
+  "Georgia": "13",
+  "Hawaii": "15",
+  "Idaho": "16",
+  "Illinois": "17",
+  "Indiana": "18",
+  "Iowa": "19",
+  "Kansas": "20",
+  "Kentucky": "21",
+  "Louisiana": "22",
+  "Maine": "23",
+  "Maryland": "24",
+  "Massachusetts": "25",
+  "Michigan": "26",
+  "Minnesota": "27",
+  "Mississippi": "28",
+  "Missouri": "29",
+  "Montana": "30",
+  "Nebraska": "31",
+  "Nevada": "32",
+  "New Hampshire": "33",
+  "New Jersey": "34",
+  "New Mexico": "35",
+  "New York": "36",
+  "North Carolina": "37",
+  "North Dakota": "38",
+  "Ohio": "39",
+  "Oklahoma": "40",
+  "Oregon": "41",
+  "Pennsylvania": "42",
+  "Rhode Island": "44",
+  "South Carolina": "45",
+  "South Dakota": "46",
+  "Tennessee": "47",
+  "Texas": "48",
+  "Utah": "49",
+  "Vermont": "50",
+  "Virginia": "51",
+  "Washington": "53",
+  "West Virginia": "54",
+  "Wisconsin": "55",
+  "Wyoming": "56",
+  "District of Columbia": "11",
+  "American Samoa": "60",
+  "Guam": "66",
+  "Northern Mariana Islands": "69",
+  "Puerto Rico": "72",
+  "Virgin Islands": "78"
+};
+
+
+const renderCounty = (csvData, selectedVariable) => {    
   return (d, index) => {
     
     // var no_death = deaths[+d.id].val 
@@ -19,16 +79,30 @@ const renderCounty = () => {
       cursor: "pointer"
     } 
 
-    // if(patternStates.length > 0) {
-    //   pathProps.fill = "#f1f1f1"      
-    //   if(patternStates.includes(+d.id)){
-    //      pathProps.fill =  colorScale(+no_death)        
-    //   }
-    // }
-    // else{
-    //   pathProps.fill =  colorScale(+no_death)
-    // }
-    /*onClick={() => onSelect(d, deaths[+d.id])}><title>{"County: " + deaths[+d.id].county + "\nState: " + deaths[+d.id].state + "\nDeaths: " + no_death + " per 100K"}</title>*/
+    if (csvData && selectedVariable) {
+      const variableData = csvData.variables[selectedVariable];
+      const stateFIPS = d.id.substring(0, 2);
+
+      const stateName = Object.keys(stateToFIPS).find(
+        (key) => stateToFIPS[key] === stateFIPS
+      );
+      if (variableData && stateName) {
+          const stateData = variableData.states.find(state => state.state === stateName); // Match by state ID or name
+        
+          if (stateData) {
+            if (stateData.value === 1){
+              pathProps.fill = "#5e8037";
+            }
+            else if(stateData.value === 0){
+              pathProps.fill = "#FF0000";
+            }
+            else{
+              pathProps.fill = '#d3d3d3'
+            }
+          }
+      }
+    }
+
     return <path {...pathProps} ></path>
   };
 };
@@ -127,7 +201,7 @@ export default class Map extends React.Component {
           <g className="country"></g>
           
           <g className="counties" transform={this.state.transform}>
-            {this.state.countyPaths.map(renderCounty())}
+            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable))}
           </g>
           <g className="states" transform={this.state.transform}>
             {this.state.statePaths.map(renderState())}
