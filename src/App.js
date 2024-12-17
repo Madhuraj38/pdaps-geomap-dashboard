@@ -15,7 +15,7 @@ function App() {
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ buttonText })  // Send button text as payload
+            body: JSON.stringify({ buttonText })  
         });
         
         if (!response.ok) {
@@ -25,11 +25,11 @@ function App() {
         const data = await response.json();
         console.log("inside app")
         console.log(data)
-        setParsedData(data); // Update state with JSON data
+        setParsedData(data); 
         return data
     } catch (err) {
         console.error('Error fetching parsed data:', err);
-        setParsedData(null); // Clear previous data if an error occurs
+        setParsedData(null); 
         return null;
     }
 };
@@ -41,7 +41,7 @@ const handleParseDataset = async (buttonText) => {
           headers: {
               'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ buttonText })  // Send button text as payload
+          body: JSON.stringify({ buttonText }) 
       });
       
       if (!response.ok) {
@@ -51,11 +51,11 @@ const handleParseDataset = async (buttonText) => {
       const data = await response.json();
       console.log("inside app")
       console.log(data)
-      setCsvData(data); // Update state with JSON data
+      setCsvData(data);
       return data
   } catch (err) {
       console.error('Error fetching parsed data:', err);
-      setCsvData(null); // Clear previous data if an error occurs
+      setCsvData(null);
       return null;
   }
 };

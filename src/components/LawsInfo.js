@@ -7,18 +7,49 @@ import { Button } from '@mui/material';
 
 export default class LawsInfo extends React.Component {
   state = {
-    activeTab: 0, // Track the active tab
+    activeTab: 0, 
   };
 
   handleTabChange = (_, newValue) => {
     this.setState({ activeTab: newValue });
+
+    if (this.props.onTabChange) {
+      this.props.onTabChange(newValue === 1); 
+    }
+  };
+
+  handleRadioChange = (variableName, value) => {
+    const selectedValues = { ...this.state.selectedValues, [variableName]: value };
+    this.setState({ selectedValues });
+
+    if (this.props.onVariableSelect) {
+      this.props.onVariableSelect(variableName, value);
+    }
+  };
+
+  handleCheckboxChange = (variableName, value) => {
+    const selectedValues = { ...this.state.selectedValues };
+    if (!selectedValues[variableName]) {
+      selectedValues[variableName] = [];
+    }
+
+    if (selectedValues[variableName].includes(value)) {
+      selectedValues[variableName] = selectedValues[variableName].filter((v) => v !== value);
+    } else {
+      selectedValues[variableName].push(value);
+    }
+
+    this.setState({ selectedValues });
+
+    if (this.props.onVariableSelect) {
+      this.props.onVariableSelect(variableName, selectedValues[variableName]);
+    }
   };
 
   handleQuestionClick = (variableName) => {
-    // Notify parent (GeoMap.js) of the selected variable
     console.log('Variable selected:', variableName);
     if (this.props.onVariableSelect) {
-      this.props.onVariableSelect(variableName);
+      this.props.onVariableSelect(variableName, null);
     }
   };
 
@@ -99,8 +130,8 @@ export default class LawsInfo extends React.Component {
                       name={`question_${index}`}
                       value={label.label}
                       style={{ marginRight: '5px' }}
-                      onClick={() =>
-                        this.handleQuestionClick(questionData.variables[0].name)
+                      onChange={() =>
+                        this.handleRadioChange(questionData.variables[0].name, parseInt(label.label))
                       }
                     />
                     {label.value}
@@ -118,9 +149,7 @@ export default class LawsInfo extends React.Component {
                         name={`variable_${index}_${idx}`}
                         value={variable.name}
                         style={{ marginRight: '5px' }}
-                        onClick={() =>
-                          this.handleQuestionClick(variable.var_name)
-                        }
+                        onChange={() => this.handleCheckboxChange(variable.var_name, '1')}
                       />
                       {variable.name}
                     </label>

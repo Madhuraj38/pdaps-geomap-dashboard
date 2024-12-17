@@ -5,6 +5,8 @@ import Map from "./Map"
 import { withRouter } from './withRouter';
 import MapLegend from './MapLegend';
 import LawsInfo from './LawsInfo';
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
 
 class GeoMap extends React.Component {
 
@@ -19,7 +21,11 @@ class GeoMap extends React.Component {
     selectedCounty: null,
     selectedCountyDetails: null,
     selectedVariable: null,
+    selectedValue: null,
+    isFilterTabSelected: false, 
     scaleFactor: 1,
+    timeRange: [2000, 2021],
+    selectedYear: 2000,
   }
 
   componentDidMount() {
@@ -104,10 +110,80 @@ class GeoMap extends React.Component {
     });
   }
 
-  handleVariableSelect = (variableName) => {
-    // Update the selected variable name in state
-    this.setState({ selectedVariable: variableName });
+  handleVariableSelect = (variableName, value) => {
+    console.log(`Variable selected: ${variableName}, Value: ${value}`);
+    this.setState({ selectedVariable: variableName, selectedValue: value });
   };
+
+  handleTabChange = (isFilterTabSelected) => {
+    console.log(`Tab changed: ${isFilterTabSelected ? 'Filters' : 'Questions'}`);
+    this.setState({ isFilterTabSelected });
+  };
+
+  handleYearChange = (value) => {
+    console.log(`Year selected: ${value}`);
+    this.setState({ selectedYear: value });
+  };
+
+  renderTimeSlider() {
+    const { timeRange, selectedYear } = this.state;
+
+    return (
+      <div className="time-slider-container">
+        <div className="time-slider">
+          <Slider
+            min={timeRange[0]}
+            max={timeRange[1]}
+            defaultValue={selectedYear}
+            onChange={this.handleYearChange}
+            marks={{
+              [timeRange[0]]: `${timeRange[0]}`,
+              [timeRange[1]]: `${timeRange[1]}`,
+            }}
+            step={1}
+          />
+        </div>
+        <div className="selected-year">
+          <span>Selected Year: {selectedYear}</span>
+        </div>
+      </div>
+    );
+  }
+
+  renderLegend() {
+    const { isFilterTabSelected } = this.state;
+
+    if (isFilterTabSelected) {
+      return (
+        <div className="legend">
+          <ul className="legend-label">
+            <li className="key" style={{ borderLeftColor: '#8BC34A', color: 'black' }}>
+              Meets Criteria
+            </li>
+            <li className="key" style={{ borderLeftColor: '#d3d3d3', color: 'black' }}>
+              Does Not Match 
+            </li>
+          </ul>
+        </div>
+      );
+    } else {
+      return (
+        <div className="legend">
+          <ul className="legend-label">
+            <li className="key" style={{ borderLeftColor: '#2491C1', color: 'black' }}>
+              Yes
+            </li>
+            <li className="key" style={{ borderLeftColor: '#ECCB7B', color: 'black' }}>
+              No
+            </li>
+            <li className="key" style={{ borderLeftColor: '#d3d3d3', color: 'black' }}>
+              No data 
+            </li>
+          </ul>
+        </div>
+      );
+    }
+  }
 
   render(){ 
     const parsedData = this.props.location?.state?.parsedData;
@@ -122,22 +198,19 @@ class GeoMap extends React.Component {
             
             this.state.mapData == null
             ? null
-            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedVariable={this.state.selectedVariable} ></Map>
+            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedVariable={this.state.selectedVariable} selectedValue={this.state.selectedValue}
+            isFilterTabSelected={this.state.isFilterTabSelected} /*selectedYear={this.state.selectedYear}*/></Map>
           }
           {/* {
             this.state.selectedCounty == null & this.state.selectedPattern == null
             ? null
             : <input className="clear" type="button" value="Reset Selections" onClick={this.resetSelections.bind(this)} />
           } */}
-          {/* <div className='legend'>
-            <ul className="legend-label">
-              <li className="key" style={{borderLeftColor:'#5e8037', color:'black'}}>Meets Criteria</li>
-              <li className="key" style={{borderLeftColor:'#d3d3d3', color:'black'}}>Not match</li>
-            </ul>
-          </div> */}
+          {this.renderLegend()}
         </div>
-        <div className="content-left" /*style={this.state.filterBox}*/>      
-          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect}></LawsInfo>
+        <div className="content-left" /*style={this.state.filterBox}*/>  
+          {this.renderTimeSlider()}
+          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect} onTabChange={this.handleTabChange}></LawsInfo>
         </div>
       </div>
     );

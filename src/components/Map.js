@@ -66,7 +66,7 @@ const stateToFIPS = {
 };
 
 
-const renderCounty = (csvData, selectedVariable) => {    
+const renderCounty = (csvData, selectedVariable, selectedValue, isFilterTabSelected) => {    
   return (d, index) => {
     
     // var no_death = deaths[+d.id].val 
@@ -87,17 +87,21 @@ const renderCounty = (csvData, selectedVariable) => {
         (key) => stateToFIPS[key] === stateFIPS
       );
       if (variableData && stateName) {
-          const stateData = variableData.states.find(state => state.state === stateName); // Match by state ID or name
-        
-          if (stateData) {
-            if (stateData.value === 1){
-              pathProps.fill = "#5e8037";
-            }
-            else if(stateData.value === 0){
-              pathProps.fill = "#FF0000";
-            }
-            else{
-              pathProps.fill = '#d3d3d3'
+          const stateData = variableData.states.find(state => state.state === stateName); 
+          if (isFilterTabSelected) {
+            pathProps.fill = stateData.value == selectedValue ? '#8BC34A' : '#d3d3d3';
+          }
+          else{  
+            if (stateData) {
+              if (stateData.value === 1){
+                pathProps.fill = "#2491C1";
+              }
+              else if(stateData.value === 0){
+                pathProps.fill = "#ECCB7B";
+              }
+              else{
+                pathProps.fill = '#d3d3d3'
+              }
             }
           }
       }
@@ -201,7 +205,7 @@ export default class Map extends React.Component {
           <g className="country"></g>
           
           <g className="counties" transform={this.state.transform}>
-            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable))}
+            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.isFilterTabSelected))}
           </g>
           <g className="states" transform={this.state.transform}>
             {this.state.statePaths.map(renderState())}

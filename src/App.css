@@ -111,3 +111,10 @@
     text-align: left;
   }
 }
+
+.time-slider-container{
+  width: 50%;
+  display: inline-block;
+  min-height: 50px;
+  margin: 15px 0px;
+}

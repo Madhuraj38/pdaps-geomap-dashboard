@@ -30,7 +30,6 @@ def parse_pdf():
 
 @app.route('/parse-data', methods=['POST'])
 def parse_data():
-    # Load the dataset
     data = request.get_json()
     if not data or 'buttonText' not in data:
         return jsonify({"error": "No button text provided"}), 400

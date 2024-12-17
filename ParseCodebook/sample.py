@@ -177,7 +177,6 @@ def read_pdf_to_json(pdf_path):
 
 def parse_excel_to_json(file_path):
     try:
-        # List all available sheets
         sheet_names = pd.ExcelFile(file_path).sheet_names
         # print("Available sheets:", sheet_names)
 
@@ -187,25 +186,18 @@ def parse_excel_to_json(file_path):
                 target_sheet = sheet
                 break
 
-        # Default to the first sheet if no suitable sheet is found
         if not target_sheet:
             target_sheet = sheet_names[0]
 
-        # Load the selected sheet
-        # print(f"Loading sheet: {target_sheet}")
         data = pd.read_excel(file_path, sheet_name=target_sheet)
         # data = pd.read_excel(file_path, sheet_name='Statistical')
         # print("Columns in the dataset:", data.columns.tolist())
 
-        # Strip whitespace from column names
         data.columns = data.columns.str.strip()
 
-        # Replace NaN with None to make it JSON-compatible
         # data = data.where(pd.notnull(data), None)
-        # # Prepare the JSON structure (as before)
         # result = {"states": {}}
 
-        # # Group data by Jurisdictions
         # for state, group in data.groupby('Jurisdictions'):
         #     result["states"][state] = []
         #     for _, row in group.iterrows():
@@ -216,16 +208,13 @@ def parse_excel_to_json(file_path):
         #         }
         #         result["states"][state].append(entry)
 
-        # Prepare the JSON structure
         result = {"variables": {}}
 
-        # Iterate over each variable (columns starting from the 4th column)
         for var_name in data.columns[3:]:
             result["variables"][var_name] = {"states": []}
 
-            # Iterate over each row and extract relevant data
             for _, row in data.iterrows():
-                if pd.notna(row[var_name]):  # Skip NaN values
+                if pd.notna(row[var_name]): 
                     result["variables"][var_name]["states"].append({
                         "state": row["Jurisdictions"],
                         "effective_date": row["Effective Date"],
