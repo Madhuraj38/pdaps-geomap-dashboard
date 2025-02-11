@@ -3,7 +3,6 @@ import * as d3 from "d3";
 import '../App.css';
 import Map from "./Map"
 import { withRouter } from './withRouter';
-import MapLegend from './MapLegend';
 import LawsInfo from './LawsInfo';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -192,8 +191,7 @@ class GeoMap extends React.Component {
     return (
       <div className='contentdiv'>
         <div className="content-right" /*style={this.state.mapBox}*/>
-          <label class="contendDivHead">Map</label>          
-          {/* <MapLegend width={200} height={35}></MapLegend> */}
+          <label class="contendDivHead">Map</label>  
           {
             
             this.state.mapData == null
