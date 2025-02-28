@@ -66,10 +66,9 @@ const stateToFIPS = {
 };
 
 
-const renderCounty = (csvData, selectedVariable, selectedValue, isFilterTabSelected) => {    
+const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters, isFilterTabSelected) => {    
   return (d, index) => {
-    
-    // var no_death = deaths[+d.id].val 
+    // Start with default fill color (for questions tab)
     const pathProps = {
       key: `path-${ index }`,
       d: d.path, 
@@ -77,39 +76,62 @@ const renderCounty = (csvData, selectedVariable, selectedValue, isFilterTabSelec
       stroke: "#ffffff",
       strokeWidth: 0.5, 
       cursor: "pointer"
-    } 
+    };
 
-    if (csvData && selectedVariable) {
-      const variableData = csvData.variables[selectedVariable];
+    if (csvData) {
       const stateFIPS = d.id.substring(0, 2);
-
-      const stateName = Object.keys(stateToFIPS).find(
-        (key) => stateToFIPS[key] === stateFIPS
-      );
-      if (variableData && stateName) {
-          const stateData = variableData.states.find(state => state.state === stateName); 
-          if (isFilterTabSelected) {
-            pathProps.fill = stateData.value == selectedValue ? '#8BC34A' : '#d3d3d3';
+      const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] === stateFIPS);
+      if (stateName) {
+        if (isFilterTabSelected) {
+          // FILTERS MODE: Use stacked filter logic.
+          if (!selectedFilters || Object.keys(selectedFilters).length === 0) {
+            // No filters selected – use a “meets criteria” color.
+            pathProps.fill = '#8BC34A';
+          } else {
+            let meetsAll = true;
+            Object.entries(selectedFilters).forEach(([variableKey, filter]) => {
+              const selectedVal = filter.code; // numeric code
+              const variableData = csvData.variables[variableKey];
+              if (variableData) {
+                const stateData = variableData.states.find(state => state.state === stateName);
+                if (!stateData || stateData.value != selectedVal) {
+                  meetsAll = false;
+                }
+              } else {
+                meetsAll = false;
+              }
+            });
+            pathProps.fill = meetsAll ? '#8BC34A' : '#d3d3d3';
           }
-          else{  
-            if (stateData) {
-              if (stateData.value === 1){
-                pathProps.fill = "#2491C1";
-              }
-              else if(stateData.value === 0){
-                pathProps.fill = "#ECCB7B";
-              }
-              else{
-                pathProps.fill = '#d3d3d3'
+        } else {
+          // QUESTIONS MODE: Use the single selected variable.
+          if (selectedVariable) {
+            const variableData = csvData.variables[selectedVariable];
+            if (variableData) {
+              const stateData = variableData.states.find(state => state.state === stateName);
+              if (stateData) {
+                // Color mapping based on stateData.value.
+                if (stateData.value === 1) {
+                  pathProps.fill = "#2491C1";
+                } else if (stateData.value === 0) {
+                  pathProps.fill = "#ECCB7B";
+                } else {
+                  // If no match, use default fill.
+                  pathProps.fill = "#d3d3d3";
+                }
               }
             }
           }
+          // If no variable is selected in questions mode, remain at default "#5bc0de".
+        }
       }
     }
-
-    return <path {...pathProps} ></path>
+    
+    return <path {...pathProps} />;
   };
 };
+
+
 
 const renderState = () => {    
   return (d, index) => {
@@ -205,7 +227,7 @@ export default class Map extends React.Component {
           <g className="country"></g>
           
           <g className="counties" transform={this.state.transform}>
-            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.isFilterTabSelected))}
+            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.selectedFilters, this.props.isFilterTabSelected))}
           </g>
           <g className="states" transform={this.state.transform}>
             {this.state.statePaths.map(renderState())}

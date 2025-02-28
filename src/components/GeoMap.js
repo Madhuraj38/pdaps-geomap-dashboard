@@ -4,8 +4,9 @@ import '../App.css';
 import Map from "./Map"
 import { withRouter } from './withRouter';
 import LawsInfo from './LawsInfo';
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
+import TimeSlider from "./TimeSlider"; // Import the TimeSlider component
+// import Slider from 'rc-slider';
+// import 'rc-slider/assets/index.css';
 
 class GeoMap extends React.Component {
 
@@ -21,10 +22,11 @@ class GeoMap extends React.Component {
     selectedCountyDetails: null,
     selectedVariable: null,
     selectedValue: null,
+    selectedFilters: {},
     isFilterTabSelected: false, 
     scaleFactor: 1,
     timeRange: [2000, 2021],
-    selectedYear: 2000,
+    selectedDate: new Date("2010-01-01"),
   }
 
   componentDidMount() {
@@ -40,14 +42,14 @@ class GeoMap extends React.Component {
     this.setState({            
                     filterBox:
                       { 
-                        width: 0.40*(winWidth - pad*3), 
+                        width: 0.35*(winWidth - pad*3), 
                         height: 0.75*(winHeight-3*pad), 
                         top: 3*pad + 2*headerH, 
                         left: pad
                       },
                       mapBox:
                         { 
-                          width: 0.55*(winWidth - pad*3), 
+                          width: 0.50*(winWidth - pad*3), 
                           height: 0.75*(winHeight-3*pad), 
                           top: 3*pad + 2*headerH, 
                           left: 0.45*(winWidth - pad*3)
@@ -109,45 +111,63 @@ class GeoMap extends React.Component {
     });
   }
 
-  handleVariableSelect = (variableName, value) => {
-    console.log(`Variable selected: ${variableName}, Value: ${value}`);
-    this.setState({ selectedVariable: variableName, selectedValue: value });
+  // handleVariableSelect = (variableName, value) => {
+  //   console.log(`Variable selected: ${variableName}, Value: ${value}`);
+  //   this.setState({ selectedVariable: variableName, selectedValue: value });
+  // };
+  handleVariableSelect = (arg1, arg2) => {
+    if (this.state.isFilterTabSelected) {
+      // Filters mode: arg1 is the full filters object.
+      this.setState({ 
+        selectedFilters: arg1,
+        selectedVariable: null,
+        selectedValue: null 
+      });
+    } else {
+      // Questions mode: arg1 is the variableName, arg2 is (typically) null.
+      this.setState({ 
+        selectedVariable: arg1, 
+        selectedValue: arg2,
+        selectedFilters: {} // Clear any filters.
+      });
+    }
   };
+  
+  
 
   handleTabChange = (isFilterTabSelected) => {
     console.log(`Tab changed: ${isFilterTabSelected ? 'Filters' : 'Questions'}`);
     this.setState({ isFilterTabSelected });
   };
 
-  handleYearChange = (value) => {
-    console.log(`Year selected: ${value}`);
-    this.setState({ selectedYear: value });
+  handleDateChange = (newDate) => {
+    this.setState({ selectedDate: newDate });
   };
 
-  renderTimeSlider() {
-    const { timeRange, selectedYear } = this.state;
+  // renderTimeSlider() {
+  //   const { timeRange, selectedYear } = this.state;
 
-    return (
-      <div className="time-slider-container">
-        <div className="time-slider">
-          <Slider
-            min={timeRange[0]}
-            max={timeRange[1]}
-            defaultValue={selectedYear}
-            onChange={this.handleYearChange}
-            marks={{
-              [timeRange[0]]: `${timeRange[0]}`,
-              [timeRange[1]]: `${timeRange[1]}`,
-            }}
-            step={1}
-          />
-        </div>
-        <div className="selected-year">
-          <span>Selected Year: {selectedYear}</span>
-        </div>
-      </div>
-    );
-  }
+  //   return (
+  //     <div className="time-slider-container">
+  //       <div className="time-slider">
+  //         <Slider
+  //           min={timeRange[0]}
+  //           max={timeRange[1]}
+  //           defaultValue={selectedYear}
+  //           onChange={this.handleYearChange}
+  //           marks={{
+  //             [timeRange[0]]: `${timeRange[0]}`,
+  //             [timeRange[1]]: `${timeRange[1]}`,
+  //           }}
+  //           step={1}
+  //         />
+  //       </div>
+  //       <div className="selected-year">
+  //         <span>Selected Year: {selectedYear}</span>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   renderLegend() {
     const { isFilterTabSelected } = this.state;
@@ -188,15 +208,16 @@ class GeoMap extends React.Component {
     const parsedData = this.props.location?.state?.parsedData;
     // console.log("Parsed Data in GeoMap render:", parsedData); 
     const csvData = this.props.location?.state?.csvData;
+
     return (
       <div className='contentdiv'>
         <div className="content-right" /*style={this.state.mapBox}*/>
-          <label class="contendDivHead">Map</label>  
+          {/* <label class="contendDivHead">Map</label>   */}
           {
             
             this.state.mapData == null
             ? null
-            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedVariable={this.state.selectedVariable} selectedValue={this.state.selectedValue}
+            : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedFilters={this.state.selectedFilters} selectedVariable={this.state.selectedVariable} selectedValue={this.state.selectedValue}
             isFilterTabSelected={this.state.isFilterTabSelected} /*selectedYear={this.state.selectedYear}*/></Map>
           }
           {/* {
@@ -207,7 +228,12 @@ class GeoMap extends React.Component {
           {this.renderLegend()}
         </div>
         <div className="content-left" /*style={this.state.filterBox}*/>  
-          {this.renderTimeSlider()}
+          {/* {this.renderTimeSlider()} */}
+          <TimeSlider
+          timeRange={this.state.timeRange}
+          selectedDate={this.state.selectedDate}
+          onDateChange={this.handleDateChange}
+        />
           <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect} onTabChange={this.handleTabChange}></LawsInfo>
         </div>
       </div>

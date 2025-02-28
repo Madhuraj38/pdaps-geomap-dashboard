@@ -8,6 +8,8 @@ import { Button } from '@mui/material';
 export default class LawsInfo extends React.Component {
   state = {
     activeTab: 0, 
+    selectedValues: {},
+    renderKey: 0,
   };
 
   handleTabChange = (_, newValue) => {
@@ -18,41 +20,101 @@ export default class LawsInfo extends React.Component {
     }
   };
 
-  handleRadioChange = (variableName, value) => {
-    const selectedValues = { ...this.state.selectedValues, [variableName]: value };
-    this.setState({ selectedValues });
 
-    if (this.props.onVariableSelect) {
-      this.props.onVariableSelect(variableName, value);
-    }
-  };
-
-  handleCheckboxChange = (variableName, value) => {
+  handleRadioChange = (question, variableName, displayValue, code) => {
     const selectedValues = { ...this.state.selectedValues };
-    if (!selectedValues[variableName]) {
-      selectedValues[variableName] = [];
-    }
-
-    if (selectedValues[variableName].includes(value)) {
-      selectedValues[variableName] = selectedValues[variableName].filter((v) => v !== value);
-    } else {
-      selectedValues[variableName].push(value);
-    }
-
-    this.setState({ selectedValues });
-
-    if (this.props.onVariableSelect) {
-      this.props.onVariableSelect(variableName, selectedValues[variableName]);
-    }
+    // Store both display text and numeric code
+    selectedValues[variableName] = { question, value: displayValue, code };
+    this.setState({ selectedValues }, () => {
+      if (this.props.onVariableSelect) {
+        // Pass the entire selectedValues object
+        this.props.onVariableSelect({ ...this.state.selectedValues });
+      }
+    });
   };
+  
+  handleCheckboxChange = (question, variableName, displayValue, code) => {
+    const selectedValues = { ...this.state.selectedValues };
+    // For these binary checkboxes, treat them like a toggle (single value)
+    selectedValues[variableName] = { question, value: displayValue, code };
+    this.setState({ selectedValues }, () => {
+      if (this.props.onVariableSelect) {
+        this.props.onVariableSelect({ ...this.state.selectedValues });
+      }
+    });
+  };
+  
+  
+  
 
   handleQuestionClick = (variableName) => {
     console.log('Variable selected:', variableName);
-    if (this.props.onVariableSelect) {
-      this.props.onVariableSelect(variableName, null);
-    }
+    this.setState({ selectedValues: {} }, () => {
+      if (this.props.onVariableSelect) {
+        // Pass the variable name and a null value (questions mode)
+        this.props.onVariableSelect(variableName, null);
+      }
+    });
   };
 
+  removeSelectedFilter = (variableName, valueToRemove) => {
+    const selectedValues = { ...this.state.selectedValues };
+    if (!selectedValues[variableName]) return;
+
+    delete selectedValues[variableName];
+  this.setState({ selectedValues, renderKey: this.state.renderKey + 1 }, () => {
+    if (this.props.onVariableSelect) {
+      this.props.onVariableSelect({ ...this.state.selectedValues });
+    }
+  });
+    // const entry = selectedValues[variableName];
+  
+    // if (!Array.isArray(entry.value)) {
+    //   // 🔹 For radios: Remove the entry and trigger a re-render
+    //   delete selectedValues[variableName];
+    //   this.setState({ selectedValues, renderKey: this.state.renderKey + 1 }, () => {
+    //     if (this.props.onVariableSelect) {
+    //       this.props.onVariableSelect(variableName, null);
+    //     }
+    //   });
+    // } else {
+    //   // 🔹 For checkboxes: Remove only one value from the array
+    //   const indexToRemove = entry.value.indexOf(valueToRemove);
+    //   if (indexToRemove > -1) {
+    //     const newValue = [
+    //       ...entry.value.slice(0, indexToRemove),
+    //       ...entry.value.slice(indexToRemove + 1)
+    //     ];
+    //     const newCodes = [
+    //       ...entry.codes.slice(0, indexToRemove),
+    //       ...entry.codes.slice(indexToRemove + 1)
+    //     ];
+    //     if (newValue.length === 0) {
+    //       delete selectedValues[variableName];
+    //     } else {
+    //       selectedValues[variableName] = { ...entry, value: newValue, codes: newCodes };
+    //     }
+    //     this.setState({ selectedValues }, () => {
+    //       if (this.props.onVariableSelect) {
+    //         this.props.onVariableSelect(variableName, newCodes);
+    //       }
+    //     });
+    //   }
+    // }
+  };
+  
+  // removeSelectedFilter = (variableName, valueToRemove) => {
+  //   const selectedValues = { ...this.state.selectedValues };
+  //   if (!selectedValues[variableName]) return;
+  //   delete selectedValues[variableName];
+  //   this.setState({ selectedValues }, () => {
+  //     if (this.props.onVariableSelect) {
+  //       this.props.onVariableSelect(variableName, null);
+  //     }
+  //   });
+  // };
+  
+  
   renderQuestionsOnly(parsedData) {
     return (
       <div className="questions-only">
@@ -108,6 +170,7 @@ export default class LawsInfo extends React.Component {
   renderFilters(parsedData) {
     return (
       <div className="questions-with-options">
+        {this.renderSelectedFilters()}
         {parsedData.questions.map((questionData, index) => (
           <div key={index} style={{
             marginBottom: '10px',
@@ -123,38 +186,83 @@ export default class LawsInfo extends React.Component {
             }}>{questionData.question}</Typography>
             {questionData.variables.length === 1 ? (
               <div>
-                {questionData.variables[0].labels.map((label, idx) => (
-                  <label key={idx} style={{ marginRight: '10px' }}>
-                    <input
-                      type="radio"
-                      name={`question_${index}`}
-                      value={label.label}
-                      style={{ marginRight: '5px' }}
-                      onChange={() =>
-                        this.handleRadioChange(questionData.variables[0].name, parseInt(label.label))
-                      }
-                    />
-                    {label.value}
-                    <br/>
-                  </label>
-                ))}
+                {questionData.variables[0].labels.map((label, idx) => {
+                  const variableName = questionData.variables[0].name;
+                  const radioSelected =
+                    this.state.selectedValues[variableName] &&
+                    this.state.selectedValues[variableName].value === label.value;
+                  return (
+                    <label key={idx} style={{ marginRight: '10px' }}>
+                      <input
+                        type="radio"
+                        name={`question_${index}`}
+                        value={label.label}
+                        style={{ marginRight: '5px' }}
+                        key={this.state.renderKey}
+                        checked={radioSelected}
+                        onClick={(e) =>{
+                          if (radioSelected) {
+                            e.preventDefault();
+                            this.removeSelectedFilter(variableName, label.value);
+                            if (this.props.onVariableSelect) {
+                              this.props.onVariableSelect(variableName, null);
+                            }
+                          } else {
+                          this.handleRadioChange(questionData.question,questionData.variables[0].name, label.value,parseInt(label.label))
+                          }
+                        }}
+                      />
+                      {label.value}
+                      <br/>
+                    </label>
+                  );
+                })}
               </div>
             ) : (
               <div>
-                {questionData.variables.map((variable, idx) => (
-                  <div key={idx}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        name={`variable_${index}_${idx}`}
-                        value={variable.name}
-                        style={{ marginRight: '5px' }}
-                        onChange={() => this.handleCheckboxChange(variable.var_name, '1')}
-                      />
-                      {variable.name}
-                    </label>
-                  </div>
-                ))}
+                {questionData.variables.map((variable, idx) => {
+                  // Find the "Yes" label (with code "1") from the labels array
+                  const yesLabel =
+                    variable.labels.find((label) => label.label === "1") ||
+                    variable.labels[1]; // fallback if needed
+
+                  const isChecked =
+                    this.state.selectedValues[variable.var_name] &&
+                    this.state.selectedValues[variable.var_name].value === yesLabel.value;
+
+                  return (
+                    <div key={idx}>
+                      <label>
+                        <input
+                          type="checkbox"
+                          name={`variable_${index}_${idx}`}
+                          value={yesLabel.label}
+                          style={{ marginRight: '5px' }}
+                          checked={isChecked}
+                          onChange={() => {
+                            // Toggle the checkbox:
+                            if (isChecked) {
+                              // Unselect: remove the filter and pass null for color logic
+                              this.removeSelectedFilter(variable.var_name, yesLabel.value);
+                              if (this.props.onVariableSelect) {
+                                this.props.onVariableSelect(variable.var_name, null);
+                              }
+                            } else {
+                              // Select: use the proper display text ("Yes") and numeric code (parsed from label)
+                              this.handleCheckboxChange(
+                                questionData.question,
+                                variable.var_name,
+                                yesLabel.value, // Display text for chip ("Yes")
+                                parseInt(yesLabel.label, 10) // Numeric code (1)
+                              );
+                            }
+                          }}
+                        />
+                        {variable.name}
+                      </label>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>
@@ -162,6 +270,85 @@ export default class LawsInfo extends React.Component {
       </div>
     );
   }
+
+  renderSelectedFilters() {
+    const { selectedValues } = this.state;
+    const entries = Object.entries(selectedValues);
+  
+    // If nothing selected, show nothing
+    if (!entries.length) return null;
+  
+    // Basic "chip" styling
+    const chipStyle = {
+      display: 'inline-block',
+      backgroundColor: '#e0e0e0',
+      borderRadius: '16px',
+      padding: '4px 8px',
+      margin: '4px',
+    };
+    const chipTextStyle = { marginRight: '8px' };
+    const xStyle = {
+      cursor: 'pointer',
+      fontWeight: 'bold',
+      marginLeft: '4px',
+    };
+  
+    return (
+      <div
+        style={{
+          marginBottom: '10px',
+          padding: '15px',
+          border: '1px solid #ddd',
+          borderRadius: '5px',
+          backgroundColor: '#f9f9f9',
+        }}
+      >
+        <Typography
+          variant="h6"
+          style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}
+        >
+          Selected Filters
+        </Typography>
+  
+        {entries.map(([variableName, { question, value }]) => {
+          // For radio, value is a single string; for checkbox, it's an array
+          if (Array.isArray(value)) {
+            // Multiple "chips" for checkbox values
+            return value.map((val, idx) => (
+              <div key={idx} style={chipStyle}>
+                <span style={chipTextStyle}>
+                  {question}: {val}
+                </span>
+                <span
+                  style={xStyle}
+                  onClick={() => this.removeSelectedFilter(variableName, val)}
+                >
+                  x
+                </span>
+              </div>
+            ));
+          } else {
+            // Single chip for radio
+            return (
+              <div key={variableName} style={chipStyle}>
+                <span style={chipTextStyle}>
+                  {question}: {value}
+                </span>
+                <span
+                  style={xStyle}
+                  onClick={() => this.removeSelectedFilter(variableName, value)}
+                >
+                  x
+                </span>
+              </div>
+            );
+          }
+        })}
+      </div>
+    );
+  }
+  
+  
 
   render() {
     const { parsedData, width, height } = this.props;
