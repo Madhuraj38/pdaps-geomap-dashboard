@@ -35,24 +35,28 @@ const TimeSlider = ({ timeRange, selectedDate, onDateChange }) => {
       .range([margin.left, width - margin.right]);
 
     // Background: Two Color Sections (Yellow & Blue)
-    svg.append("rect")
-      .attr("x", margin.left)
-      .attr("y", 10)
-      .attr("width", xScale(currentDate) - margin.left)
-      .attr("height", 20)
-      .attr("fill", "#d4af37");
+    // svg.append("rect")
+    //   .attr("x", margin.left)
+    //   .attr("y", 10)
+    //   .attr("width", xScale(currentDate) - margin.left)
+    //   .attr("height", 20)
+    //   .attr("fill", "#d4af37");
 
-    svg.append("rect")
-      .attr("x", xScale(currentDate))
-      .attr("y", 10)
-      .attr("width", width - xScale(currentDate) - margin.right)
-      .attr("height", 20)
-      .attr("fill", "#4682B4");
+    // svg.append("rect")
+    //   .attr("x", xScale(currentDate))
+    //   .attr("y", 10)
+    //   .attr("width", width - xScale(currentDate) - margin.right)
+    //   .attr("height", 20)
+    //   .attr("fill", "#4682B4");
 
     // X-axis: Show only major years (every 5 years)
+    const totalYears = endDate.getFullYear() - startDate.getFullYear();
+    const tickStep = Math.max(1, Math.floor(totalYears / 6)); // Aim for 5–7 ticks
+    
     const xAxis = d3.axisBottom(xScale)
-      .ticks(d3.timeYear.every(5)) // Show every 5 years
-      .tickFormat(d3.timeFormat("%Y")); // Display only years
+      .ticks(d3.timeYear.every(tickStep))
+      .tickFormat(d3.timeFormat("%Y"));
+    
 
     svg.append("g")
       .attr("transform", `translate(0,30)`)
@@ -65,10 +69,11 @@ const TimeSlider = ({ timeRange, selectedDate, onDateChange }) => {
         newX = Math.max(margin.left, Math.min(width - margin.right, newX));
 
         // Convert pixel value to full date
-        const newDate = xScale.invert(newX);
+        let newDate = xScale.invert(newX);
         if (!isNaN(newDate.getTime())) {
           onDateChange(newDate);
         }
+
       });
 
     // Add Marker Line

@@ -65,8 +65,27 @@ const stateToFIPS = {
   "Virgin Islands": "78"
 };
 
+function getStateValueAtDate(stateEntries, stateName, selectedDate) {
+  const date = new Date(selectedDate);
 
-const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters, isFilterTabSelected) => {    
+  const entries = stateEntries
+    .filter(entry => entry.state === stateName)
+    .map(entry => ({
+      ...entry,
+      effective: new Date(entry.effective_date),
+      validThrough: new Date(entry.valid_through_date)
+    }));
+
+  // Find the entry active on selected date
+  const activeEntry = entries.find(entry =>
+    date >= entry.effective && date <= entry.validThrough
+  );
+
+  return activeEntry ? activeEntry.value : null;
+}
+
+
+const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters, isFilterTabSelected, selectedDate, isStaticData) => {    
   return (d, index) => {
     // Start with default fill color (for questions tab)
     const pathProps = {
@@ -93,10 +112,26 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
               const selectedVal = filter.code; // numeric code
               const variableData = csvData.variables[variableKey];
               if (variableData) {
-                const stateData = variableData.states.find(state => state.state === stateName);
-                if (!stateData || stateData.value != selectedVal) {
+                let stateValue = null;
+
+                if (isStaticData) {
+                  // Just pick the latest entry
+                  const matchingStates = variableData.states
+                    .filter(entry => entry.state === stateName);
+                  if (matchingStates.length > 0) {
+                    stateValue = matchingStates[matchingStates.length - 1].value;
+                  }
+                } else {
+                  // Use time-filtered logic
+                  stateValue = getStateValueAtDate(variableData.states, stateName, selectedDate);
+                }
+
+                if (stateValue == null || stateValue != selectedVal) {
                   meetsAll = false;
                 }
+                // if (!stateData || stateData.value != selectedVal) {
+                //   meetsAll = false;
+                // }
               } else {
                 meetsAll = false;
               }
@@ -108,18 +143,32 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
           if (selectedVariable) {
             const variableData = csvData.variables[selectedVariable];
             if (variableData) {
-              const stateData = variableData.states.find(state => state.state === stateName);
-              if (stateData) {
+              // const stateData = variableData.states.find(state => state.state === stateName);
+              let stateValue = null;
+
+              if (isStaticData) {
+                // Just pick the latest entry
+                const matchingStates = variableData.states
+                  .filter(entry => entry.state === stateName);
+                if (matchingStates.length > 0) {
+                  stateValue = matchingStates[matchingStates.length - 1].value;
+                }
+              } else {
+                // Use time-filtered logic
+                stateValue = getStateValueAtDate(variableData.states, stateName, selectedDate);
+              }
+
+              // if (stateData) {
                 // Color mapping based on stateData.value.
-                if (stateData.value === 1) {
+                if (stateValue === 1) {
                   pathProps.fill = "#2491C1";
-                } else if (stateData.value === 0) {
+                } else if (stateValue === 0) {
                   pathProps.fill = "#ECCB7B";
                 } else {
                   // If no match, use default fill.
                   pathProps.fill = "#d3d3d3";
                 }
-              }
+              // }
             }
           }
           // If no variable is selected in questions mode, remain at default "#5bc0de".
@@ -227,7 +276,7 @@ export default class Map extends React.Component {
           <g className="country"></g>
           
           <g className="counties" transform={this.state.transform}>
-            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.selectedFilters, this.props.isFilterTabSelected))}
+            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.selectedFilters, this.props.isFilterTabSelected, this.props.selectedDate, this.props.isStaticData))}
           </g>
           <g className="states" transform={this.state.transform}>
             {this.state.statePaths.map(renderState())}

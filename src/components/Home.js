@@ -21,7 +21,7 @@ export default function Home({ handleParsePdf, handleParseDataset}) {
     const dataset = await handleParseDataset(buttonText);
     console.log("inside home dataset", dataset)
     if (data && dataset) {
-      navigate('/geomap', { state: { parsedData: data, csvData: dataset} });
+      navigate('/geomap', { state: { parsedData: data, csvData: dataset, lawName : buttonText} });
     } else {
       console.error("Parsed data is null!");
   } 

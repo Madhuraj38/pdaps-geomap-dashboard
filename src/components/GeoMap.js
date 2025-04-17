@@ -25,8 +25,9 @@ class GeoMap extends React.Component {
     selectedFilters: {},
     isFilterTabSelected: false, 
     scaleFactor: 1,
-    timeRange: [2000, 2021],
-    selectedDate: new Date("2010-01-01"),
+    timeRange: [],
+    selectedDate: new Date(),
+    isStaticData: false,
   }
 
   componentDidMount() {
@@ -57,6 +58,14 @@ class GeoMap extends React.Component {
                   });
 
     this.loadData();
+
+    const csvData = this.props.location?.state?.csvData;
+    if (csvData) {
+      const { timeRange, isStatic } = this.getTimeRangeFromData(csvData);
+      const defaultDate = new Date(timeRange[0], 0, 1);
+      this.setState({ timeRange, selectedDate: defaultDate, isStaticData: isStatic });
+
+    }
 
     window.addEventListener('resize', this.onResize.bind(this), false);
   }
@@ -144,6 +153,32 @@ class GeoMap extends React.Component {
     this.setState({ selectedDate: newDate });
   };
 
+  getTimeRangeFromData = (csvData) => {
+    const allDates = [];
+  
+    if (!csvData || !csvData.variables) return { timeRange: [2000, 2021], isStatic: true };
+  
+    Object.values(csvData.variables).forEach(variable => {
+      variable.states.forEach(stateEntry => {
+        const effective = new Date(stateEntry.effective_date);
+        const validThrough = new Date(stateEntry.valid_through_date);
+        if (!isNaN(effective)) allDates.push(effective);
+        if (!isNaN(validThrough)) allDates.push(validThrough);
+      });
+    });
+  
+    if (allDates.length === 0) return { timeRange: [2000, 2021], isStatic: true };
+  
+    const years = allDates.map(date => date.getFullYear());
+    let minYear = Math.min(...years);
+    const maxYear = Math.max(...years);
+  
+    const isStatic = minYear === maxYear;
+  
+    return { timeRange: [minYear, maxYear], isStatic };
+  };
+  
+  
   // renderTimeSlider() {
   //   const { timeRange, selectedYear } = this.state;
 
@@ -208,9 +243,11 @@ class GeoMap extends React.Component {
     const parsedData = this.props.location?.state?.parsedData;
     // console.log("Parsed Data in GeoMap render:", parsedData); 
     const csvData = this.props.location?.state?.csvData;
+    const lawName = this.props.location?.state?.lawName;
 
     return (
       <div className='contentdiv'>
+        <h2>{lawName}</h2>
         <div className="content-right" /*style={this.state.mapBox}*/>
           {/* <label class="contendDivHead">Map</label>   */}
           {
@@ -218,7 +255,7 @@ class GeoMap extends React.Component {
             this.state.mapData == null
             ? null
             : <Map width={this.state.mapBox.width-10} height={this.state.mapBox.height-50} padding={10} data={this.state.mapData} csvData={csvData} selectedFilters={this.state.selectedFilters} selectedVariable={this.state.selectedVariable} selectedValue={this.state.selectedValue}
-            isFilterTabSelected={this.state.isFilterTabSelected} /*selectedYear={this.state.selectedYear}*/></Map>
+            isFilterTabSelected={this.state.isFilterTabSelected} /*selectedYear={this.state.selectedYear}*/ selectedDate={this.state.selectedDate} isStaticData={this.state.isStaticData}></Map>
           }
           {/* {
             this.state.selectedCounty == null & this.state.selectedPattern == null
@@ -229,11 +266,14 @@ class GeoMap extends React.Component {
         </div>
         <div className="content-left" /*style={this.state.filterBox}*/>  
           {/* {this.renderTimeSlider()} */}
-          <TimeSlider
-          timeRange={this.state.timeRange}
-          selectedDate={this.state.selectedDate}
-          onDateChange={this.handleDateChange}
-        />
+          {!this.state.isStaticData && (
+            <TimeSlider
+              timeRange={this.state.timeRange}
+              selectedDate={this.state.selectedDate}
+              onDateChange={this.handleDateChange}
+            />
+          )}
+
           <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect} onTabChange={this.handleTabChange}></LawsInfo>
         </div>
       </div>
