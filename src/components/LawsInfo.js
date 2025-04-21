@@ -44,7 +44,18 @@ export default class LawsInfo extends React.Component {
     });
   };
   
-  
+  // 🔹 Reset everything the user has selected
+  handleReset = () => {
+    this.setState(
+    { selectedValues: {}, renderKey: this.state.renderKey + 1 },
+    () => {
+      // Tell the parent that nothing is selected any more
+      if (this.props.onVariableSelect) {
+        this.props.onVariableSelect({});
+      }
+    });
+  };
+
   
 
   handleQuestionClick = (variableName) => {
@@ -368,6 +379,15 @@ export default class LawsInfo extends React.Component {
           <Tab label="Questions" /> 
           <Tab label="Filters" />
         </Tabs>
+        {/* 🔹 New RESET button */}
+        <Button
+          className="reset-btn"
+          variant="outlined"
+          size="small"
+          onClick={this.handleReset}
+        >
+          RESET
+        </Button>
         <div
           className="innercontentdiv"
           style={{

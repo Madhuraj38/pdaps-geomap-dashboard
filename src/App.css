@@ -119,3 +119,22 @@
   min-height: 50px;
   margin: 15px 0px;
 }
+
+.content {
+  display: flex;
+  flex-wrap: wrap;       
+  align-items: center;   
+}
+
+.content .MuiTabs-root {
+  flex: 0 0 auto !important;  
+}
+      
+.content .MuiTab-root + .MuiTab-root,   
+.content .reset-btn {                   
+  margin-left: 16px;     
+}
+      
+.content .innercontentdiv {
+  flex: 1 0 100%;        
+}

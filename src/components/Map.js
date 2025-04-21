@@ -1,10 +1,10 @@
 import React from 'react';
 import * as d3 from "d3";
-import { geoPath } from "d3-geo"
-import { feature } from "topojson-client"
-import {schemeBlues} from "d3-scale-chromatic"
+import { geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import { schemeBlues } from "d3-scale-chromatic";
 
-const projection = null
+const projection = null;
 
 const stateToFIPS = {
   "Alabama": "01",
@@ -65,6 +65,61 @@ const stateToFIPS = {
   "Virgin Islands": "78"
 };
 
+// Two-letter postal abbreviations
+const stateAbbreviation = {
+  "Alabama": "AL",
+  "Alaska": "AK",
+  "Arizona": "AZ",
+  "Arkansas": "AR",
+  "California": "CA",
+  "Colorado": "CO",
+  "Connecticut": "CT",
+  "Delaware": "DE",
+  "Florida": "FL",
+  "Georgia": "GA",
+  "Hawaii": "HI",
+  "Idaho": "ID",
+  "Illinois": "IL",
+  "Indiana": "IN",
+  "Iowa": "IA",
+  "Kansas": "KS",
+  "Kentucky": "KY",
+  "Louisiana": "LA",
+  "Maine": "ME",
+  "Maryland": "MD",
+  "Massachusetts": "MA",
+  "Michigan": "MI",
+  "Minnesota": "MN",
+  "Mississippi": "MS",
+  "Missouri": "MO",
+  "Montana": "MT",
+  "Nebraska": "NE",
+  "Nevada": "NV",
+  "New Hampshire": "NH",
+  "New Jersey": "NJ",
+  "New Mexico": "NM",
+  "New York": "NY",
+  "North Carolina": "NC",
+  "North Dakota": "ND",
+  "Ohio": "OH",
+  "Oklahoma": "OK",
+  "Oregon": "OR",
+  "Pennsylvania": "PA",
+  "Rhode Island": "RI",
+  "South Carolina": "SC",
+  "South Dakota": "SD",
+  "Tennessee": "TN",
+  "Texas": "TX",
+  "Utah": "UT",
+  "Vermont": "VT",
+  "Virginia": "VA",
+  "Washington": "WA",
+  "West Virginia": "WV",
+  "Wisconsin": "WI",
+  "Wyoming": "WY",
+  "District of Columbia": "DC"
+};
+
 function getStateValueAtDate(stateEntries, stateName, selectedDate) {
   const date = new Date(selectedDate);
 
@@ -84,16 +139,14 @@ function getStateValueAtDate(stateEntries, stateName, selectedDate) {
   return activeEntry ? activeEntry.value : null;
 }
 
-
-const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters, isFilterTabSelected, selectedDate, isStaticData) => {    
+const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters, isFilterTabSelected, selectedDate, isStaticData) => {
   return (d, index) => {
-    // Start with default fill color (for questions tab)
     const pathProps = {
       key: `path-${ index }`,
-      d: d.path, 
-      fill: "#5bc0de",           
+      d: d.path,
+      fill: "#5bc0de",
       stroke: "#ffffff",
-      strokeWidth: 0.5, 
+      strokeWidth: 0.5,
       cursor: "pointer"
     };
 
@@ -102,36 +155,27 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
       const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] === stateFIPS);
       if (stateName) {
         if (isFilterTabSelected) {
-          // FILTERS MODE: Use stacked filter logic.
           if (!selectedFilters || Object.keys(selectedFilters).length === 0) {
-            // No filters selected – use a “meets criteria” color.
             pathProps.fill = '#8BC34A';
           } else {
             let meetsAll = true;
             Object.entries(selectedFilters).forEach(([variableKey, filter]) => {
-              const selectedVal = filter.code; // numeric code
+              const selectedVal = filter.code;
               const variableData = csvData.variables[variableKey];
               if (variableData) {
                 let stateValue = null;
-
                 if (isStaticData) {
-                  // Just pick the latest entry
                   const matchingStates = variableData.states
                     .filter(entry => entry.state === stateName);
                   if (matchingStates.length > 0) {
                     stateValue = matchingStates[matchingStates.length - 1].value;
                   }
                 } else {
-                  // Use time-filtered logic
                   stateValue = getStateValueAtDate(variableData.states, stateName, selectedDate);
                 }
-
                 if (stateValue == null || stateValue != selectedVal) {
                   meetsAll = false;
                 }
-                // if (!stateData || stateData.value != selectedVal) {
-                //   meetsAll = false;
-                // }
               } else {
                 meetsAll = false;
               }
@@ -139,60 +183,46 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
             pathProps.fill = meetsAll ? '#8BC34A' : '#d3d3d3';
           }
         } else {
-          // QUESTIONS MODE: Use the single selected variable.
           if (selectedVariable) {
             const variableData = csvData.variables[selectedVariable];
             if (variableData) {
-              // const stateData = variableData.states.find(state => state.state === stateName);
               let stateValue = null;
-
               if (isStaticData) {
-                // Just pick the latest entry
                 const matchingStates = variableData.states
                   .filter(entry => entry.state === stateName);
                 if (matchingStates.length > 0) {
                   stateValue = matchingStates[matchingStates.length - 1].value;
                 }
               } else {
-                // Use time-filtered logic
                 stateValue = getStateValueAtDate(variableData.states, stateName, selectedDate);
               }
-
-              // if (stateData) {
-                // Color mapping based on stateData.value.
-                if (stateValue === 1) {
-                  pathProps.fill = "#2491C1";
-                } else if (stateValue === 0) {
-                  pathProps.fill = "#ECCB7B";
-                } else {
-                  // If no match, use default fill.
-                  pathProps.fill = "#d3d3d3";
-                }
-              // }
+              if (stateValue === 1) {
+                pathProps.fill = "#2491C1";
+              } else if (stateValue === 0) {
+                pathProps.fill = "#ECCB7B";
+              } else {
+                pathProps.fill = "#d3d3d3";
+              }
             }
           }
-          // If no variable is selected in questions mode, remain at default "#5bc0de".
         }
       }
     }
-    
+
     return <path {...pathProps} />;
   };
 };
 
-
-
-const renderState = () => {    
+const renderState = () => {
   return (d, index) => {
-    
     const pathProps = {
       key: `st-path-${ index }`,
-      d: d.path,      
+      d: d.path,
       fill: "none",
-      stroke: "#ffffff",//"#cecece",
-      strokeWidth: 2, 
-    }      
-    return <path {...pathProps} ></path>
+      stroke: "#ffffff",
+      strokeWidth: 2,
+    };
+    return <path {...pathProps}></path>;
   };
 };
 
@@ -206,13 +236,12 @@ export default class Map extends React.Component {
     countyPaths: [],
     statePaths: [],
     selectedCounty: null,
-  }
+  };
 
   componentDidMount() {
-    var wd = this.props.width
-    var ht = this.props.height
-    this.zoom = d3
-      .zoom()
+    var wd = this.props.width;
+    var ht = this.props.height;
+    this.zoom = d3.zoom()
       .scaleExtent([0.8, 7])
       .translateExtent([
         [-100, -100],
@@ -227,62 +256,80 @@ export default class Map extends React.Component {
 
     var ft = feature(this.props.data, this.props.data.objects.counties).features
     var countyPaths = ft.map( (d, index) => { return { id: d.id, path: geoPath().projection(projection)(d)} })
-
-    var ft2 = feature(this.props.data, this.props.data.objects.states).features
-    var statePaths = ft2.map( (d, index) => { return { id: d.id, path: geoPath().projection(projection)(d)} })
-
-    var w = this.props.width
-    var h = this.props.height 
-    var l = 0
-    var s = w / 1000 > h / 585 ? h / 585 : w / 1000;
     
-    this.setState({countyPaths: countyPaths, statePaths: statePaths, transform: `translate(${l}, ${0}) scale(${s})`, scale: s, height:h, width: w})
+    var ft2 = feature(this.props.data, this.props.data.objects.states).features
+    var statePaths = ft2.map((d, index) => {
+      const pathGenerator = geoPath().projection(projection);
+      return {
+        id: d.id,
+        path: pathGenerator(d),
+        centroid: pathGenerator.centroid(d)
+      };
+    });
+
+    var w = this.props.width;
+    var h = this.props.height;
+    var l = 0;
+    var s = w / 1000 > h / 585 ? h / 585 : w / 1000;
+
+    this.setState({countyPaths: countyPaths, statePaths: statePaths, transform: `translate(${l}, ${0}) scale(${s})`, scale: s, height:h, width: w});
   }
-  
-  static getDerivedStateFromProps(props, state){
+
+  static getDerivedStateFromProps(props, state) {
     if(state.width != props.width || state.height != props.height) {
-      var w = props.width
-      var h = props.height 
-      var l = 0
+      var w = props.width;
+      var h = props.height;
+      var l = 0;
       var s = w / 1000 > h / 586 ? h / 586 : w / 1000;
-      
-      return({transform: `translate(${l}, ${0}) scale(${s})`, scale: s, height:h, width: w})
+
+      return({transform: `translate(${l}, ${0}) scale(${s})`, scale: s, height:h, width: w});
     }
     if(props.selectedCounty == null){
       return({selectedCounty: null});
     }
-    return null
+    return null;
   }
 
   zoomed(event) {
-    var zoomTransform = event.transform
-    var x = 0
-    var y = 0
+    var zoomTransform = event.transform;
+    var x = 0;
+    var y = 0;
     var transform = `translate(${x + zoomTransform.x}, ${y + zoomTransform.y}) scale(${this.state.scale*zoomTransform.k})`;
-    this.setState({transform: transform})   
+    this.setState({transform: transform});
   }
 
   onSelect(item, details) {
     this.props.onSelect(+item.id, details);
-    this.setState({selectedCounty: item.path})
+    this.setState({selectedCounty: item.path});
   }
 
   render() {
-      
     var colorScale = d3.scaleThreshold().domain(d3.range(0, 160, 20)).range(schemeBlues[9]);
-    
+
     return (
-        <svg width={this.props.width} height={this.props.height} style={{margin:5}} ref="svg"  >
-          <g className="country"></g>
-          
-          <g className="counties" transform={this.state.transform}>
-            {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.selectedFilters, this.props.isFilterTabSelected, this.props.selectedDate, this.props.isStaticData))}
-          </g>
-          <g className="states" transform={this.state.transform}>
-            {this.state.statePaths.map(renderState())}
-            <path d={this.state.selectedCounty} fill={"none"} stroke={"#eb9514"} strokeWidth={1.5} ></path>
-          </g>
-        </svg>
+      <svg width={this.props.width} height={this.props.height} style={{margin:5}} ref="svg">
+        <g className="country"></g>
+
+        <g className="counties" transform={this.state.transform}>
+          {this.state.countyPaths.map(renderCounty(this.props.csvData, this.props.selectedVariable, this.props.selectedValue, this.props.selectedFilters, this.props.isFilterTabSelected, this.props.selectedDate, this.props.isStaticData))}
+        </g>
+        <g className="states" transform={this.state.transform}>
+          {this.state.statePaths.map(renderState())}
+          {this.state.statePaths.map((d, i) => {
+            const stateFIPS = d.id.substring(0, 2);
+            const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] === stateFIPS);
+            const abbr = stateAbbreviation[stateName];
+            if (!abbr) return null;
+            const [x, y] = d.centroid;
+            return (
+              <text key={`label-${i}`} x={x} y={y} textAnchor="middle"fontSize={16} fontWeight="bold" fill="#000">
+                {abbr}
+              </text>
+            );
+          })}
+          <path d={this.state.selectedCounty} fill={"none"} stroke={"#eb9514"} strokeWidth={1.5}></path>
+        </g>
+      </svg>
     );
   }
 }
