@@ -122,9 +122,10 @@ const stateAbbreviation = {
 
 function getStateValueAtDate(stateEntries, stateName, selectedDate) {
   const date = new Date(selectedDate);
-
+  // console.log('Date : ',date);
+  // console.log('Selected Date : ', selectedDate)
   const entries = stateEntries
-    .filter(entry => entry.state === stateName)
+    .filter(entry => entry.state == stateName)
     .map(entry => ({
       ...entry,
       effective: new Date(entry.effective_date),
@@ -135,7 +136,7 @@ function getStateValueAtDate(stateEntries, stateName, selectedDate) {
   const activeEntry = entries.find(entry =>
     date >= entry.effective && date <= entry.validThrough
   );
-
+  // console.log(activeEntry)
   return activeEntry ? activeEntry.value : null;
 }
 
@@ -152,10 +153,10 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
 
     if (csvData) {
       const stateFIPS = d.id.substring(0, 2);
-      const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] === stateFIPS);
+      const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] == stateFIPS);
       if (stateName) {
         if (isFilterTabSelected) {
-          if (!selectedFilters || Object.keys(selectedFilters).length === 0) {
+          if (!selectedFilters || Object.keys(selectedFilters).length == 0) {
             pathProps.fill = '#8BC34A';
           } else {
             let meetsAll = true;
@@ -166,7 +167,7 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
                 let stateValue = null;
                 if (isStaticData) {
                   const matchingStates = variableData.states
-                    .filter(entry => entry.state === stateName);
+                    .filter(entry => entry.state == stateName);
                   if (matchingStates.length > 0) {
                     stateValue = matchingStates[matchingStates.length - 1].value;
                   }
@@ -189,16 +190,17 @@ const renderCounty = (csvData, selectedVariable, selectedValue, selectedFilters,
               let stateValue = null;
               if (isStaticData) {
                 const matchingStates = variableData.states
-                  .filter(entry => entry.state === stateName);
+                  .filter(entry => entry.state == stateName);
                 if (matchingStates.length > 0) {
                   stateValue = matchingStates[matchingStates.length - 1].value;
                 }
               } else {
                 stateValue = getStateValueAtDate(variableData.states, stateName, selectedDate);
               }
-              if (stateValue === 1) {
+              // console.log(stateValue);
+              if (stateValue == 1) {
                 pathProps.fill = "#2491C1";
-              } else if (stateValue === 0) {
+              } else if (stateValue == 0) {
                 pathProps.fill = "#ECCB7B";
               } else {
                 pathProps.fill = "#d3d3d3";
@@ -317,7 +319,7 @@ export default class Map extends React.Component {
           {this.state.statePaths.map(renderState())}
           {this.state.statePaths.map((d, i) => {
             const stateFIPS = d.id.substring(0, 2);
-            const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] === stateFIPS);
+            const stateName = Object.keys(stateToFIPS).find(key => stateToFIPS[key] == stateFIPS);
             const abbr = stateAbbreviation[stateName];
             if (!abbr) return null;
             const [x, y] = d.centroid;

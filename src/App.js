@@ -2,7 +2,8 @@ import './App.css';
 import React,  { useState, useEffect } from 'react';
 import Home from './components/Home';
 import GeoMap from './components/GeoMap';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import HomeIcon from '@mui/icons-material/Home';
+import { BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
 
 function App() {
   const [parsedData, setParsedData] = useState(null);
@@ -63,7 +64,12 @@ const handleParseDataset = async (buttonText) => {
   return (
     <div className="App">
       <Router>
-        <div className='navbar'><h1>Opioid Laws</h1></div>
+        <div className='navbar'>
+        <Link to='/' className='HomeLogo' style={{ textDecoration: 'none' }}>
+          <HomeIcon style={{ fontSize: '2.5rem', color: 'black' }} />
+        </Link>
+          <h1>Opioid Laws</h1>
+        </div>
         <Routes>
           <Route path='/' exact element={<Home handleParsePdf={handleParsePdf} handleParseDataset={handleParseDataset}/>} />
           <Route path='/geomap' element={<GeoMap />} />

@@ -5,6 +5,7 @@ import Map from "./Map"
 import { withRouter } from './withRouter';
 import LawsInfo from './LawsInfo';
 import TimeSlider from "./TimeSlider"; // Import the TimeSlider component
+import * as XLSX from "xlsx";
 // import Slider from 'rc-slider';
 // import 'rc-slider/assets/index.css';
 
@@ -58,6 +59,20 @@ class GeoMap extends React.Component {
                   });
 
     this.loadData();
+
+    fetch(process.env.PUBLIC_URL + "/data/US_FIPS_Codes.xlsx")
+    .then((res) => res.arrayBuffer())
+    .then((buffer) => {
+      const workbook = XLSX.read(buffer, { type: "array" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const fipsData = XLSX.utils.sheet_to_json(sheet, {
+        header: ["State", "County Name", "FIPS State", "FIPS County"],
+        range: 1, 
+        defval: ""
+      });
+      
+      this.setState({ fipsData });
+    });
 
     const csvData = this.props.location?.state?.csvData;
     if (csvData) {
@@ -167,13 +182,13 @@ class GeoMap extends React.Component {
       });
     });
   
-    if (allDates.length === 0) return { timeRange: [2000, 2021], isStatic: true };
+    if (allDates.length == 0) return { timeRange: [2000, 2021], isStatic: true };
   
     const years = allDates.map(date => date.getFullYear());
     let minYear = Math.min(...years);
     const maxYear = Math.max(...years);
   
-    const isStatic = minYear === maxYear;
+    const isStatic = minYear == maxYear;
   
     return { timeRange: [minYear, maxYear], isStatic };
   };
@@ -274,7 +289,7 @@ class GeoMap extends React.Component {
             />
           )}
 
-          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} onVariableSelect={this.handleVariableSelect} onTabChange={this.handleTabChange}></LawsInfo>
+          <LawsInfo width={this.state.filterBox.width-10} height={this.state.filterBox.height-30} padding={10} parsedData={parsedData} csvData={csvData} fipsData={this.state.fipsData} selectedDate={this.state.selectedDate} onVariableSelect={this.handleVariableSelect} onTabChange={this.handleTabChange}></LawsInfo>
         </div>
       </div>
     );

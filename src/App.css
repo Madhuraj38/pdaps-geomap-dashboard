@@ -32,6 +32,11 @@
   font-size: 1rem;
   top: 0;
   z-index: 999;
+  .HomeLogo{
+    position: fixed;
+    left: 2%;
+    cursor: pointer;
+  }
 }
 
 .Grid{

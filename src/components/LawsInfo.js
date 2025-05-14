@@ -4,6 +4,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
+import * as XLSX from "xlsx";
 
 export default class LawsInfo extends React.Component {
   state = {
@@ -16,7 +17,7 @@ export default class LawsInfo extends React.Component {
     this.setState({ activeTab: newValue });
 
     if (this.props.onTabChange) {
-      this.props.onTabChange(newValue === 1); 
+      this.props.onTabChange(newValue == 1); 
     }
   };
 
@@ -58,6 +59,7 @@ export default class LawsInfo extends React.Component {
 
   
 
+  
   handleQuestionClick = (variableName) => {
     console.log('Variable selected:', variableName);
     this.setState({ selectedValues: {} }, () => {
@@ -68,6 +70,78 @@ export default class LawsInfo extends React.Component {
     });
   };
 
+  handleSave = (mode = "filtered") => {
+    const { csvData, fipsData, selectedDate } = this.props;
+    const { selectedValues } = this.state;
+  
+    if (!csvData || !fipsData) {
+      alert("Required data missing.");
+      return;
+    }
+  
+    const allStates = new Set();
+    Object.values(csvData.variables).forEach(variable => {
+      variable.states.forEach(s => allStates.add(s.state));
+    });
+  
+    let matchingStates;
+    if (mode === "filtered") {
+      matchingStates = Array.from(allStates).filter(stateName =>
+        Object.entries(selectedValues).every(([varKey, { code }]) => {
+          const variable = csvData.variables[varKey];
+          if (!variable) return false;
+          const entries = variable.states.filter(s => s.state === stateName);
+          if (!entries.length) return false;
+          return entries.at(-1).value == code;
+        })
+      );
+    } else {
+      matchingStates = Array.from(allStates);
+    }
+  
+    const fipsRows = fipsData.filter(row => matchingStates.includes(row["State"]));
+    if (!fipsRows.length) {
+      alert("No matching counties found.");
+      return;
+    }
+  
+    const rows = fipsRows.map(row => {
+      const state = row["State"];
+      const county = row["County Name"];
+      const stateCode = String(row["FIPS State"]).padStart(2, "0");
+      const countyCode = String(row["FIPS County"]).padStart(3, "0");
+  
+      const output = {
+        Fips_county_code: `${stateCode}${countyCode}`,
+        county,
+        state,
+        selected_date: selectedDate.toISOString().split("T")[0],
+      };
+  
+      Object.entries(csvData.variables).forEach(([varKey, variable]) => {
+        const entry = variable.states
+          .filter(s => s.state === state)
+          .at(-1);
+        if (mode === "filtered") {
+          if (selectedValues[varKey]) output[varKey] = 1;
+        } else {
+          output[varKey] = entry?.value ?? ".";
+        }
+      });
+  
+      return output;
+    });
+  
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Export");
+  
+    const tag = mode === "filtered" ? "filtered" : "all";
+    const filename = `${tag}_counties_${selectedDate.toISOString().split("T")[0]}.xlsx`;
+    XLSX.writeFile(workbook, filename);
+  };
+
+  
   removeSelectedFilter = (variableName, valueToRemove) => {
     const selectedValues = { ...this.state.selectedValues };
     if (!selectedValues[variableName]) return;
@@ -140,8 +214,11 @@ export default class LawsInfo extends React.Component {
             <Typography variant="h6" style={{
               fontSize: '12px',
               fontWeight: 'bold'
-            }} onClick={() =>
-              this.handleQuestionClick(questionData.variables[0].name)
+            }} onClick={() =>{
+              if (questionData.variables.length > 0) {
+              this.handleQuestionClick(questionData.variables[0].name);
+              }
+            }
             }>{questionData.question}</Typography>
              {questionData.variables.length > 1 && (
               <div>
@@ -154,10 +231,11 @@ export default class LawsInfo extends React.Component {
               }}
               onChange={(e) => {
                 const selectedVariable = questionData.variables.find(
-                  (variable) => variable.name === e.target.value
+                  (variable) => variable.name == e.target.value
                 );
                 if (selectedVariable) {
-                  this.handleQuestionClick(selectedVariable.var_name);
+                  const varKey = selectedVariable.var_name || selectedVariable.name;
+                  this.handleQuestionClick(varKey);
                 }
               }}
             >
@@ -195,13 +273,13 @@ export default class LawsInfo extends React.Component {
               fontSize: '12px',
               fontWeight: 'bold'
             }}>{questionData.question}</Typography>
-            {questionData.variables.length === 1 ? (
+            {questionData.variables.length == 1 ? (
               <div>
                 {questionData.variables[0].labels.map((label, idx) => {
                   const variableName = questionData.variables[0].name;
                   const radioSelected =
                     this.state.selectedValues[variableName] &&
-                    this.state.selectedValues[variableName].value === label.value;
+                    this.state.selectedValues[variableName].value == label.value;
                   return (
                     <label key={idx} style={{ marginRight: '10px' }}>
                       <input
@@ -215,6 +293,7 @@ export default class LawsInfo extends React.Component {
                           if (radioSelected) {
                             e.preventDefault();
                             this.removeSelectedFilter(variableName, label.value);
+                            
                             if (this.props.onVariableSelect) {
                               this.props.onVariableSelect(variableName, null);
                             }
@@ -232,14 +311,15 @@ export default class LawsInfo extends React.Component {
             ) : (
               <div>
                 {questionData.variables.map((variable, idx) => {
+                  const varKey = variable.var_name || variable.name;
                   // Find the "Yes" label (with code "1") from the labels array
                   const yesLabel =
-                    variable.labels.find((label) => label.label === "1") ||
+                    variable.labels.find((label) => label.label == "1") ||
                     variable.labels[1]; // fallback if needed
 
                   const isChecked =
-                    this.state.selectedValues[variable.var_name] &&
-                    this.state.selectedValues[variable.var_name].value === yesLabel.value;
+                    this.state.selectedValues[varKey] &&
+                    this.state.selectedValues[varKey].value == yesLabel.value;
 
                   return (
                     <div key={idx}>
@@ -252,17 +332,18 @@ export default class LawsInfo extends React.Component {
                           checked={isChecked}
                           onChange={() => {
                             // Toggle the checkbox:
+                            // console.log('variable name:', varKey);
                             if (isChecked) {
                               // Unselect: remove the filter and pass null for color logic
-                              this.removeSelectedFilter(variable.var_name, yesLabel.value);
+                              this.removeSelectedFilter(varKey, yesLabel.value);
                               if (this.props.onVariableSelect) {
-                                this.props.onVariableSelect(variable.var_name, null);
+                                this.props.onVariableSelect(varKey, null);
                               }
                             } else {
                               // Select: use the proper display text ("Yes") and numeric code (parsed from label)
                               this.handleCheckboxChange(
                                 questionData.question,
-                                variable.var_name,
+                                varKey,
                                 yesLabel.value, // Display text for chip ("Yes")
                                 parseInt(yesLabel.label, 10) // Numeric code (1)
                               );
@@ -355,6 +436,16 @@ export default class LawsInfo extends React.Component {
             );
           }
         })}
+
+        {/* <Button
+          variant="outlined"
+          size="small"
+          style={{ marginTop: '10px' }}
+          onClick={this.handleSaveMatchedStates}
+        >
+          Save
+        </Button> */}
+
       </div>
     );
   }
@@ -365,7 +456,7 @@ export default class LawsInfo extends React.Component {
     const { parsedData, width, height } = this.props;
     const { activeTab } = this.state;
 
-    if (!parsedData || !parsedData.questions || parsedData.questions.length === 0) {
+    if (!parsedData || !parsedData.questions || parsedData.questions.length == 0) {
       return <p>Loading...</p>;
     }
 
@@ -382,12 +473,28 @@ export default class LawsInfo extends React.Component {
         {/* 🔹 New RESET button */}
         <Button
           className="reset-btn"
-          variant="outlined"
-          size="small"
+          variant="text"
+          // size="small"
           onClick={this.handleReset}
         >
           RESET
         </Button>
+        {Object.keys(this.state.selectedValues).length > 0 && (
+          <Button
+            variant="text"
+            color="primary"
+            onClick={() => this.handleSave("filtered")}
+          >
+            SAVE
+          </Button>
+        )}
+        <Button
+            variant="text"
+            color="primary"
+            onClick={() => this.handleSave("all")}
+          >
+            SAVE All
+          </Button>
         <div
           className="innercontentdiv"
           style={{
@@ -400,7 +507,7 @@ export default class LawsInfo extends React.Component {
             fontSize: '12px'
           }}
         >
-          {activeTab === 0
+          {activeTab == 0
             ? this.renderQuestionsOnly(parsedData) :this.renderFilters(parsedData)}
         </div>
       </div>
