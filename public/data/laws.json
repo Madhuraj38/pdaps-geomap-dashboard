@@ -75,6 +75,13 @@
         { "text": "Recreational Marijuana Laws" },
         { "text": "State Laws Directing Opioid Litigation Proceeds" }
       ]
+    },
+    {
+      "title": "Statewise Abortion Laws",
+      "description": "Dataset extracted from ncsl.org.",
+      "buttons": [
+        { "text": "Protections and Restrictions"}
+      ]
     }
   ]
   

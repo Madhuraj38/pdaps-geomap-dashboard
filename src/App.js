@@ -68,7 +68,7 @@ const handleParseDataset = async (buttonText) => {
         <Link to='/' className='HomeLogo' style={{ textDecoration: 'none' }}>
           <HomeIcon style={{ fontSize: '2.5rem', color: 'black' }} />
         </Link>
-          <h1>Opioid Laws</h1>
+          <h1>Public Health Laws Dashboard</h1>
         </div>
         <Routes>
           <Route path='/' exact element={<Home handleParsePdf={handleParsePdf} handleParseDataset={handleParseDataset}/>} />
