@@ -4,14 +4,30 @@ from flask_cors import CORS
 import os
 import pandas as pd
 
-from sample import parse_excel_to_json, read_pdf_to_json 
+try:
+    from sample import parse_excel_to_json, read_pdf_to_json 
+    print("Successfully imported sample module")
+except ImportError as e:
+    print(f"Failed to import sample module: {e}")
+    def parse_excel_to_json(file_path):
+        return {"error": f"Sample module not available: {e}"}
+    def read_pdf_to_json(file_path):
+        return {"error": f"Sample module not available: {e}"}
 
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/', methods=['GET'])
+def home():
+    return jsonify({"status": "PDAPS Backend is running", "routes": ["/parse-pdf", "/parse-data"]})
 
 PDF_FOLDER = os.path.join(os.path.dirname(__file__), 'codebooks')
 DATA_FOLDER = os.path.join(os.path.dirname(__file__), 'data')
+
+print(f"PDF_FOLDER: {PDF_FOLDER}")
+print(f"DATA_FOLDER: {DATA_FOLDER}")
+print(f"PDF folder exists: {os.path.exists(PDF_FOLDER)}")
+print(f"Data folder exists: {os.path.exists(DATA_FOLDER)}")
 
 @app.route('/parse-pdf', methods=['POST'])
 def parse_pdf():
@@ -65,4 +81,4 @@ def parse_data():
     return jsonify({"error": f"No file found for: {button_text}"}), 404
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)
