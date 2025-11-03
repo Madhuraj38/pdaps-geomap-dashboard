@@ -71,7 +71,7 @@
       "description": "Datasets on related drug law topics that provide an overview of the state laws and regulations governing these domains.",
       "buttons": [
         { "text": "Drugged Driving Laws"},
-        { "text": "Medication-Assisted Treatment with Methadone (MAT) laws" },
+        { "text": "Medication-Assisted Treatment with Methadone (MAT) Laws" },
         { "text": "Recreational Marijuana Laws" },
         { "text": "State Laws Directing Opioid Litigation Proceeds" }
       ]

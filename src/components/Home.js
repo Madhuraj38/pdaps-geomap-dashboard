@@ -38,7 +38,7 @@ export default function Home({ handleParsePdf, handleParseDataset}) {
               <div className='left'>
                 <div className='inner-content'>
                   <h2>{row.title}</h2>
-                  <p>{row.description}</p>
+                  <p className="italic-description">{row.description}</p>
                   {row.buttons.map((button, index) => (
                     <Link key={index} 
                           // to="/geomap"
@@ -51,13 +51,19 @@ export default function Home({ handleParsePdf, handleParseDataset}) {
                         color="primary"
                         sx={{
                           padding: '10px 20px',
-                          bgcolor: 'skyblue',
+                          background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+                          color: 'white',
+                          fontWeight: 600,
+                          fontFamily: 'Segoe UI, Tahoma, sans-serif',
                           width: '100%',
                           fontSize: '11px',
                           lineHeight: '1.5',
                           letterSpacing: '2px',
                           marginBottom: '10px',
                           textTransform: 'none',
+                          '&:hover': {
+                            background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
+                          },
                           '@media (max-width: 768px)': {
                             padding: '8px 16px',
                             fontSize: '14px',
@@ -76,7 +82,7 @@ export default function Home({ handleParsePdf, handleParseDataset}) {
                 <div className='right'>
                   <div className='inner-content'>
                     <h2>{nextRow.title}</h2>
-                    <p>{nextRow.description}</p>
+                    <p className="italic-description">{nextRow.description}</p>
                     {nextRow.buttons.map((button, index) => (
                       <Link key={index} 
                           to="/geomap"
@@ -89,13 +95,19 @@ export default function Home({ handleParsePdf, handleParseDataset}) {
                           color="primary"
                           sx={{
                             padding: '10px 20px',
-                            bgcolor: 'skyblue',
+                            background: 'linear-gradient(135deg, #1e40af 0%, #3b82f6 100%)',
+                            color: 'white',
+                            fontWeight: 600,
+                            fontFamily: 'Segoe UI, Tahoma, sans-serif',
                             width: '100%',
                             fontSize: '11px',
                             lineHeight: '1.5',
                             letterSpacing: '2px',
                             marginBottom: '10px',
                             textTransform: 'none',
+                            '&:hover': {
+                              background: 'linear-gradient(135deg, #1d4ed8 0%, #2563eb 100%)',
+                            },
                             '@media (max-width: 768px)': {
                               padding: '8px 16px',
                               fontSize: '14px',

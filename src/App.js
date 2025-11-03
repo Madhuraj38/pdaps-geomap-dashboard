@@ -3,9 +3,12 @@ import React,  { useState, useEffect } from 'react';
 import Home from './components/Home';
 import GeoMap from './components/GeoMap';
 import HomeIcon from '@mui/icons-material/Home';
+import DarkModeToggle from './components/DarkModeToggle';
 import { BrowserRouter as Router, Routes, Route, Link} from 'react-router-dom';
+import { DarkModeProvider, useDarkMode } from './contexts/DarkModeContext';
 
-function App() {
+function AppContent() {
+  const { isDarkMode } = useDarkMode();
   const [parsedData, setParsedData] = useState(null);
   const [csvData, setCsvData] = useState(null);
 
@@ -66,9 +69,10 @@ const handleParseDataset = async (buttonText) => {
       <Router>
         <div className='navbar'>
         <Link to='/' className='HomeLogo' style={{ textDecoration: 'none' }}>
-          <HomeIcon style={{ fontSize: '2.5rem', color: 'black' }} />
+          <HomeIcon style={{ fontSize: '3.0rem', color: isDarkMode ? 'white' : 'black' }} />
         </Link>
-          <h1>Public Health Laws Dashboard</h1>
+          <h1>Public Health Laws</h1>
+          <DarkModeToggle />
         </div>
         <Routes>
           <Route path='/' exact element={<Home handleParsePdf={handleParsePdf} handleParseDataset={handleParseDataset}/>} />
@@ -76,6 +80,14 @@ const handleParseDataset = async (buttonText) => {
         </Routes>
       </Router>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <DarkModeProvider>
+      <AppContent />
+    </DarkModeProvider>
   );
 }
 
