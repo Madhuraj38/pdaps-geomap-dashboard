@@ -262,7 +262,7 @@ class GeoMap extends React.Component {
 
     return (
       <div className='contentdiv'>
-        <h2>{lawName}</h2>
+        <h2 className="law-title">{lawName}</h2>
         <div className="content-right" /*style={this.state.mapBox}*/>
           {/* <label class="contendDivHead">Map</label>   */}
           {

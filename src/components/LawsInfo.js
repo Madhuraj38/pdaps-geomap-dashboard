@@ -207,27 +207,31 @@ export default class LawsInfo extends React.Component {
           <div key={index} style={{
             marginBottom: '10px',
             padding: '15px',
-            border: '1px solid #ddd',
-            borderRadius: '5px',
-            backgroundColor: '#f9f9f9',
+            border: 'none',
+            borderRadius: '12px',
+            background: 'white',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}>
-            <Typography variant="h6" style={{
-              fontSize: '12px',
-              fontWeight: 'bold'
-            }} onClick={() =>{
+            <div 
+              className="italic-question"
+              style={{ color: '#1e40af !important' }}
+              onClick={() =>{
               if (questionData.variables.length > 0) {
               this.handleQuestionClick(questionData.variables[0].name);
               }
             }
-            }>{questionData.question}</Typography>
+            }>{questionData.question}</div>
              {questionData.variables.length > 1 && (
               <div>
               <select
               style={{
                 width: '100%',
                 padding: '5px',
-                border: '1px solid #ddd',
+                border: '1px solid #0ea5e9',
                 borderRadius: '4px',
+                fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
+                backgroundColor: 'white',
+                color: '#374151'
               }}
               onChange={(e) => {
                 const selectedVariable = questionData.variables.find(
@@ -264,15 +268,16 @@ export default class LawsInfo extends React.Component {
           <div key={index} style={{
             marginBottom: '10px',
             padding: '15px',
-            border: '1px solid #ddd',
-            borderRadius: '5px',
-            backgroundColor: '#f9f9f9',
+            border: 'none',
+            borderRadius: '12px',
+            background: 'white',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}
           >
-            <Typography variant="h6" style={{
-              fontSize: '12px',
-              fontWeight: 'bold'
-            }}>{questionData.question}</Typography>
+            <div 
+              className="italic-question"
+              style={{ color: '#1e40af !important' }}
+            >{questionData.question}</div>
             {questionData.variables.length == 1 ? (
               <div>
                 {questionData.variables[0].labels.map((label, idx) => {
@@ -373,16 +378,19 @@ export default class LawsInfo extends React.Component {
     // Basic "chip" styling
     const chipStyle = {
       display: 'inline-block',
-      backgroundColor: '#e0e0e0',
+      backgroundColor: '#dbeafe',
       borderRadius: '16px',
       padding: '4px 8px',
       margin: '4px',
+      border: '1px solid #93c5fd',
+      fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, sans-serif',
     };
-    const chipTextStyle = { marginRight: '8px' };
+    const chipTextStyle = { marginRight: '8px', color: '#1e40af', fontSize: '12px' };
     const xStyle = {
       cursor: 'pointer',
       fontWeight: 'bold',
       marginLeft: '4px',
+      color: '#3b82f6',
     };
   
     return (
@@ -390,14 +398,15 @@ export default class LawsInfo extends React.Component {
         style={{
           marginBottom: '10px',
           padding: '15px',
-          border: '1px solid #ddd',
-          borderRadius: '5px',
-          backgroundColor: '#f9f9f9',
+          border: 'none',
+          borderRadius: '12px',
+          background: 'white',
+          boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
         }}
       >
         <Typography
           variant="h6"
-          style={{ fontSize: '12px', fontWeight: 'bold', marginBottom: '8px' }}
+          style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'Segoe UI, Tahoma, sans-serif', color: 'var(--selected-filters-color, #1e40af)', marginBottom: '8px' }}
         >
           Selected Filters
         </Typography>

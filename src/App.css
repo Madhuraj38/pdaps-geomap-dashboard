@@ -2,6 +2,217 @@
   text-align: center;
 }
 
+@keyframes gradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+  background-color: #0f172a;
+  color: #f1f5f9;
+  --question-text-color: #f1f5f9;
+  --selected-filters-color: #ffffff;
+}
+
+.dark-mode .App {
+  background-color: #0f172a;
+}
+
+.dark-mode .navbar {
+  background: transparent !important;
+}
+
+.dark-mode .time-slider-container input[type="range"] {
+  background: #374151 !important;
+}
+
+.dark-mode .time-slider-container input[type="range"]::-webkit-slider-thumb {
+  background: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.dark-mode .time-slider-container input[type="range"]::-moz-range-thumb {
+  background: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.dark-mode input[type="range"] {
+  background: #374151 !important;
+}
+
+.dark-mode input[type="range"]::-webkit-slider-thumb {
+  background: #ffffff !important;
+  border: 2px solid #ffffff !important;
+}
+
+.dark-mode .time-slider-container svg line {
+  stroke: #ffffff !important;
+}
+
+.dark-mode svg line {
+  stroke: #ffffff !important;
+}
+
+/* Dark mode styles for enhanced time slider */
+.dark-mode .time-slider-container svg rect {
+  fill: #60a5fa !important;
+  stroke: #ffffff !important;
+}
+
+.dark-mode .time-slider-container g {
+  fill: #ffffff !important;
+}
+
+body.dark-mode .legend-label,
+body.dark-mode .legend-label .key {
+  color: #ffffff !important;
+}
+
+.dark-mode .inner-content {
+  background: #1e293b;
+  color: #f1f5f9;
+}
+
+.dark-mode .inner-content h2 {
+  color: #60a5fa;
+}
+
+.dark-mode .inner-content p {
+  color: #cbd5e1;
+}
+
+.dark-mode .italic-description {
+  color: #cbd5e1;
+}
+
+.dark-mode .law-title {
+  color: #60a5fa;
+}
+
+.dark-mode .contentdiv {
+  background-color: #0f172a;
+}
+
+.dark-mode .content-left,
+.dark-mode .content-right {
+  background-color: #1e293b;
+  color: #f1f5f9;
+}
+
+.dark-mode .questions-with-options > div,
+.dark-mode .questions-only > div,
+.dark-mode .renderSelectedFilters > div {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+/* Dark mode toggle switch */
+.dark-mode-toggle {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  z-index: 1000;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-switch.active {
+  background-color: #4f46e5;
+}
+
+.toggle-slider {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle-switch.active .toggle-slider {
+  transform: translateX(30px);
+}
+
+.dark-mode .button {
+  background: #4f46e5 !important;
+  color: white !important;
+}
+
+.dark-mode .renderSelectedFilters {
+  background: #1e293b !important;
+}
+
+.dark-mode .chipStyle {
+  background: #374151 !important;
+  color: #f1f5f9 !important;
+}
+
+.dark-mode select {
+  background-color: #374151 !important;
+  color: #f1f5f9 !important;
+  border-color: #4b5563 !important;
+}
+
+.dark-mode input[type="radio"] + label {
+  color: #f1f5f9 !important;
+}
+
+.dark-mode input[type="checkbox"] + label {
+  color: #f1f5f9 !important;
+}
+
+.dark-mode .innercontentdiv {
+  background-color: #0f172a !important;
+  color: #f1f5f9 !important;
+}
+
+body.dark-mode .italic-question {
+  color: #f1f5f9 !important;
+}
+
+.italic-question {
+  font-size: 12px !important;
+  font-weight: bold !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+  color: #1e40af !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.italic-description {
+  font-size: 13px !important;
+  font-style: italic !important;
+  font-weight: bold !important;
+  font-family: 'Segoe UI', Tahoma, sans-serif !important;
+  color: #000000 !important;
+  line-height: 1.5 !important;
+}
+
+body.dark-mode .italic-description {
+  color: #ffffff !important;
+}
+
 .App-logo {
   height: 40vmin;
   pointer-events: none;
@@ -24,7 +235,7 @@
 }
 
 .navbar{
-  background: linear-gradient(180deg, rgb(190 190 190) 0%, #61dafb8c 100%);
+  background: transparent;
   height: 80px;
   display: flex;
   justify-content: center;
@@ -32,6 +243,15 @@
   font-size: 1rem;
   top: 0;
   z-index: 999;
+  h1 {
+    font-family: 'Tahoma', sans-serif;
+    background: linear-gradient(90deg, #1e40af, #3b82f6, #60a5fa, #3b82f6, #1e40af);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradient 3s ease infinite;
+  }
   .HomeLogo{
     position: fixed;
     left: 2%;
@@ -57,22 +277,34 @@
   width: 48%;
 }
 .inner-content{
-  box-shadow: 2px 2px 16px 0px rgba(0, 32, 144, 0.40);
-  border-radius: 10px;
+  background: white;
+  border: none;
+  border-radius: 12px;
   padding: 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  h2 {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    font-weight: bold;
+    color: #1e40af;
+    margin-bottom: 15px;
+  }
   p{
     font-size: 13px;
-    color: #615e5e;
+    color: #374151;
     line-height: 1.5;
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 }
 .button{
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-weight: 600;
   font-size: 11px;
   line-height: 1.5;
   letter-spacing: 2px;
   margin-bottom: 10px;
   text-transform: none;
+  background: #1e40af;
+  color: white;
 }
 .contentdiv {
   margin: auto;
@@ -95,6 +327,16 @@
 }
 .contendDivHead{
   font-size: 24px;
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-weight: bold;
+  color: #1e40af;
+}
+
+.law-title {
+  font-family: 'Segoe UI', Tahoma, sans-serif;
+  font-weight: bold;
+  color: #1e40af;
+  margin-bottom: 20px;
 }
 
 .questions {
@@ -110,6 +352,7 @@
   top: 65%;
   font-size: 11px;
   font-weight: bold;
+  color: #1e40af;
   .key{
     border-left-width: 10px;
     border-left-style: solid;
@@ -133,6 +376,18 @@
 
 .content .MuiTabs-root {
   flex: 0 0 auto !important;  
+}
+
+.content .MuiTab-root {
+  color: #000000 !important;
+}
+
+.content .MuiTab-root.Mui-selected {
+  color: #1e40af !important;
+}
+
+body.dark-mode .content .MuiTab-root {
+  color: #ffffff !important;
 }
       
 .content .MuiTab-root + .MuiTab-root,   
