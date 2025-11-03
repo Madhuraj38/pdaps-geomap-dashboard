@@ -14,7 +14,7 @@ function AppContent() {
 
   const handleParsePdf = async (buttonText) => {
     try {
-        const response = await fetch('http://127.0.0.1:5000/parse-pdf', {
+        const response = await fetch('http://130.245.117.21:5005/parse-pdf', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ function AppContent() {
 
 const handleParseDataset = async (buttonText) => {
   try {
-      const response = await fetch('http://127.0.0.1:5000/parse-data', {
+      const response = await fetch('http://130.245.117.21:5005/parse-data', {
           method: 'POST',
           headers: {
               'Content-Type': 'application/json'
