@@ -187,11 +187,11 @@ body.dark-mode .legend-label .key {
   color: #f1f5f9 !important;
 }
 
-body.dark-mode .italic-question {
+body.dark-mode .question-text {
   color: #f1f5f9 !important;
 }
 
-.italic-question {
+.question-text {
   font-size: 12px !important;
   font-weight: bold !important;
   font-family: 'Segoe UI', Tahoma, sans-serif !important;

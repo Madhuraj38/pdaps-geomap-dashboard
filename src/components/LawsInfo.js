@@ -213,7 +213,7 @@ export default class LawsInfo extends React.Component {
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08)',
           }}>
             <div 
-              className="italic-question"
+              className="question-text"
               style={{ color: '#1e40af !important' }}
               onClick={() =>{
               if (questionData.variables.length > 0) {
@@ -275,7 +275,7 @@ export default class LawsInfo extends React.Component {
           }}
           >
             <div 
-              className="italic-question"
+              className="question-text"
               style={{ color: '#1e40af !important' }}
             >{questionData.question}</div>
             {questionData.variables.length == 1 ? (
