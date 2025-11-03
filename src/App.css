@@ -383,11 +383,15 @@ body.dark-mode .italic-description {
 }
 
 .content .MuiTab-root.Mui-selected {
-  color: #1e40af !important;
+  color: #1976d2 !important;
 }
 
 body.dark-mode .content .MuiTab-root {
   color: #ffffff !important;
+}
+
+body.dark-mode .content .MuiTab-root.Mui-selected {
+  color: #1976d2 !important;
 }
       
 .content .MuiTab-root + .MuiTab-root,   
