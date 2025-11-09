@@ -81,4 +81,4 @@ def parse_data():
     return jsonify({"error": f"No file found for: {button_text}"}), 404
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5005, debug=True)
+    app.run(host='0.0.0.0', port=3002, debug=True)
